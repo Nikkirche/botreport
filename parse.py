@@ -8,9 +8,9 @@ SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
 
 def get_today_matches() -> dict:
     # arr = [2, 3, 4, 6, 45]
-    league = [45]
+    leagues = [45]
     ans_dict = dict()
-    for num_lig in league:
+    for league in leagues:
         # req = rq.get(
         #     f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
         #     f'={SECRET}&competition_id={num_lig}')
@@ -27,7 +27,6 @@ class Match:
     def __init__(self, match_id: int, data: dict):
         self.match_id = match_id
         self.counter_event = -1
-        self.time = data['scheduled']
 
         self.stats_home = {}
         self.stats_away = {}
@@ -39,6 +38,8 @@ class Match:
         self.score_away = 0
 
         self.status = data['status']
+
+        self.events = dict()
 
     def update(self):
         info = self._get_match_events()
@@ -61,6 +62,8 @@ class Match:
 
         self.counter_event = len(info['event']) - 1
         self.score_home, self.stats_away = map(int, info['match']['score'].split(' - '))
+        self.status = info['match']['status']
+        self.events = info['event']
 
     def _get_match_events(self) -> dict:
         req = rq.get(f"http://livescore-api.com/api-client/scores/events.json"
@@ -78,6 +81,12 @@ class Match:
         return self.stats_home['h'][name] if name in self.stats_home['h'].keys() \
             else self.stats_away['a'][name]
 
+    def get_status(self):
+        return self.status
+
+    def get_events(self):
+        return self.events
+
 
 if __name__ == '__main__':
     today = get_today_matches()
@@ -88,7 +97,7 @@ if __name__ == '__main__':
     match = Match(first_id, first_data)
     match.update()
     pprint(match.stats_home)
-    print(match.score_home, match.stats_away, match.team_home, match.time)
+    print(match.score_home, match.stats_away, match.team_home)
     # print("ID:", first_id)
     # print()
     # pprint(get_match_events(first_id))
