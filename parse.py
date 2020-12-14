@@ -15,7 +15,7 @@ def get_today_matches() -> json:
         data = json.loads(req.text)
         for dat in data['data']['match']:
             ans_dict[dat['id']] = [dat['status'], dat['score'], dat['time']]
-        return json.dumps()
+        return json.dumps(ans_dict)
 
 
 def get_match_events(match_id: int) -> json:
