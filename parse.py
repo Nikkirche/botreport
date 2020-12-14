@@ -19,7 +19,7 @@ def get_today_matches() -> dict:
         # print(json.loads(req.text))
         data = json.loads(req.text)
         for dat in data['data']['match']:
-            ans_dict[dat['id']] = [dat['status'], dat['score'], dat['time']]
+            ans_dict[dat['id']] = dat
         return ans_dict
 
 
@@ -27,6 +27,7 @@ class Match:
     def __init__(self, match_id: int, data: dict):
         self.match_id = match_id
         self.counter_event = -1
+        self.time = data['scheduled']
         self.stats = {
             'h': {},  # home command
             'a': {}  # away command
@@ -43,10 +44,18 @@ class Match:
 
     def update(self):
         info = self._get_match_events()
-        events = filter(lambda x: x['sort'] > self.counter_event, info['event'])
+        events = filter(lambda x: int(x['sort']) > self.counter_event, info['event'])
         for el in events:
-            self.stats[el['home_away']][el['player']][el['event']] += 1
-        self.score['h'], self.score['a'] = map(int, info['match']['match_score'].split(' - '))
+            if el['player'] not in self.stats[el['home_away']]:
+                self.stats[el['home_away']][el['player']] = {}
+                self.stats[el['home_away']][el['player']][el['event']] = 1
+            else:
+                if el['event'] not in self.stats[el['home_away']][el['player']]:
+                    self.stats[el['home_away']][el['player']][el['event']] = 1
+                else:
+                    self.stats[el['home_away']][el['player']][el['event']] += 1
+        self.counter_event = len(info['event']) - 1
+        self.score['h'], self.score['a'] = map(int, info['match']['score'].split(' - '))
 
     def _get_match_events(self) -> dict:
         req = rq.get(f"http://livescore-api.com/api-client/scores/events.json"
@@ -67,8 +76,13 @@ class Match:
 if __name__ == '__main__':
     today = get_today_matches()
     # pprint(today)
-    first_id = list(today.keys())[0]
-
+    first_id = list(today.keys())[10]
+    first_data = list(today.values())[10]
+    pprint(first_id)
+    match = Match(first_id, first_data)
+    match.update()
+    pprint(match.stats)
+    print(match.score, match.teams_names, match.time)
     # print("ID:", first_id)
     # print()
     # pprint(get_match_events(first_id))
