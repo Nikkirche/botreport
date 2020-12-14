@@ -2,6 +2,9 @@ import requests as rq
 import json
 from pprint import pprint
 
+KEY = "qACKZM1CUVIaCa3g"
+SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
+
 
 def get_today_matches() -> json:
     # arr = [2, 3, 4, 6, 45]
@@ -9,8 +12,8 @@ def get_today_matches() -> json:
     ans_dict = dict()
     for num_lig in arr:
         req = rq.get(
-            f'http://livescore-api.com/api-client/scores/live.json?key=qACKZM1CUVIaCa3g&secret'
-            f'=GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps&competition_id={num_lig}')
+            f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
+            f'={SECRET}&competition_id={num_lig}')
         # print(json.loads(req.text))
         data = json.loads(req.text)
         for dat in data['data']['match']:
@@ -20,7 +23,7 @@ def get_today_matches() -> json:
 
 def get_match_events(match_id: int) -> json:
     req = rq.get(f"http://livescore-api.com/api-client/scores/events.json"
-                 f"?key=qACKZM1CUVIaCa3g&secret=GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps&id="
+                 f"?key={KEY}&secret={SECRET}&id="
                  f"{match_id}&sort=5")
     return json.loads(req.text)
 
@@ -32,7 +35,7 @@ def get_last_event(match_id: int) -> json:
 
 def get_summary(match_id: int) -> json:
     req = rq.get(f'http://livescore-api.com/api-client/matches/stats.json?match_id={match_id}'
-                 '&key=qACKZM1CUVIaCa3g&secret=GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps')
+                 f'&key={KEY}&secret={SECRET}')
     return json.loads(req)['data']
 
 
