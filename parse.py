@@ -8,9 +8,9 @@ SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
 
 def get_today_matches() -> dict:
     # arr = [2, 3, 4, 6, 45]
-    arr = [45]
+    league = [45]
     ans_dict = dict()
-    for num_lig in arr:
+    for num_lig in league:
         # req = rq.get(
         #     f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
         #     f'={SECRET}&competition_id={num_lig}')
@@ -43,25 +43,21 @@ class Match:
     def update(self):
         info = self._get_match_events()
         events = filter(lambda x: int(x['sort']) > self.counter_event, info['event'])
-        for el in events:
-            if el['home_away'] == 'h':
-                if el['player'] not in self.stats_home:
-                    self.stats_home[el['player']] = {}
-                    self.stats_home[el['player']][el['event']] = 1
-                else:
-                    if el['event'] not in self.stats_home[el['player']]:
-                        self.stats_home[el['player']][el['event']] = 1
-                    else:
-                        self.stats_home[el['player']][el['event']] += 1
+        for event in events:
+            team = self.stats_home if event['home_away'] == 'h' else self.stats_away
+
+            if event['player'] not in self.stats_home:
+                team[event['player']] = {}
+                team[event['player']][event['event']] = 1
             else:
-                if el['player'] not in self.stats_away:
-                    self.stats_away[el['player']] = {}
-                    self.stats_away[el['player']][el['event']] = 1
+                if event['event'] not in self.stats_home[event['player']]:
+                    team[event['player']][event['event']] = 1
                 else:
-                    if el['event'] not in self.stats_away[el['player']]:
-                        self.stats_away[el['player']][el['event']] = 1
-                    else:
-                        self.stats_away[el['player']][el['event']] += 1
+                    team[event['player']][event['event']] += 1
+            if event['home_away'] == 'h':
+                self.stats_home = team
+            else:
+                self.stats_away = team
 
         self.counter_event = len(info['event']) - 1
         self.score_home, self.stats_away = map(int, info['match']['score'].split(' - '))
@@ -100,3 +96,11 @@ if __name__ == '__main__':
     # pprint(get_last_event(first_id))
     # pprint(get_today())
     # pprint(get_summary(first_id))
+
+"""
+225275
+{'ILGAZ SELIM': {'GOAL': 1},
+ 'PABLO': {'YELLOW_CARD': 1},
+ 'SALEM BOUPENDZA AARON': {'GOAL': 2}}
+3 1 Hatayspor 10:30
+"""
