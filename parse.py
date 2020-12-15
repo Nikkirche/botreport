@@ -4,7 +4,7 @@ from pprint import pprint
 
 KEY = "qACKZM1CUVIaCa3g"
 SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
-
+COMPETITIONS = [45]
 
 class Match:
     def __init__(self, match_id: int, data: dict):
@@ -70,6 +70,9 @@ class Match:
     def get_events(self):
         return self.events
 
+    def __eq__(self, other):
+        return self.match_id == other
+
 
 class Controller:
     def __init__(self):
@@ -77,12 +80,12 @@ class Controller:
 
     def get_today_matches(self) -> dict:
         # arr = [2, 3, 4, 6, 45]
-        leagues = [45]
+        competitions = COMPETITIONS
         ans_dict = dict()
-        for league in leagues:
+        for competition in competitions:
             # req = rq.get(
             #     f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
-            #     f'={SECRET}&competition_id={num_lig}')
+            #     f'={SECRET}&competition_id={competition}')
             req = rq.get(f'http://livescore-api.com/api-client/scores/history.json?key={KEY}'
                          f'&secret={SECRET}&from=2020-12-12&to=2020-12-13')
             # print(json.loads(req.text))
@@ -98,6 +101,12 @@ class Controller:
     def update_all_matches(self):
         for match in self.matches:
             match.update()
+
+    def add_new_matches(self):
+        matches = self.get_today_matches()
+        for id_match, data in matches.items():
+            if id_match not in self.matches:
+                self.matches.append(Match(id_match, data))
 
     def clear_matches(self):
         for index, match in enumerate(self.matches):
