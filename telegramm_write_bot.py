@@ -11,6 +11,6 @@ def send_message_to_channel(type_event, text, chat_id):
         if(type_event=='GOAL'):
             bot.send_sticker(CHAT_ID, 'CAACAgIAAxkBAAEBrwxf2J9rjKdERUaj9SVf_mafW9wPJQACCwEAAladvQpOseemCPvtSR4E')
         if(type_event=='PENALTI'):
-            bot.send_sticker(CHAT_ID, 'CAACAgIAAxkBAAEBrw9f2J_H33XlAWqv97qPmHcCBtZ-rwACbQMAApzW5wqmXv5sCyuobx4E')
+            bot.send_sticker(CHAT_ID, 'CAACAgIAAxkBAAEBrxFf2KKkfzHy5iLRY_XCTiSttfxYzAAC_wADVp29Ctqt-n3kvEAkHgQ')
 #send_message_to_channel('GOAL','GOAAAAAAAAAAAAAAAAAAL', CHAT_ID)
 #post to https://t.me/sportivit
