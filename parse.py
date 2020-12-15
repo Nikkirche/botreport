@@ -6,6 +6,7 @@ KEY = "qACKZM1CUVIaCa3g"
 SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
 COMPETITIONS = [45]
 
+
 class Match:
     def __init__(self, match_id: int, data: dict):
         self.match_id = match_id
@@ -30,11 +31,11 @@ class Match:
         for event in events:
             team = self.stats_home if event['home_away'] == 'h' else self.stats_away
 
-            if event['player'] not in self.stats_home:
+            if event['player'] not in team:
                 team[event['player']] = {}
                 team[event['player']][event['event']] = 1
             else:
-                if event['event'] not in self.stats_home[event['player']]:
+                if event['event'] not in team[event['player']]:
                     team[event['player']][event['event']] = 1
                 else:
                     team[event['player']][event['event']] += 1
@@ -44,7 +45,7 @@ class Match:
                 self.stats_away = team
 
         self.counter_event = len(info['event']) - 1
-        self.score_home, self.stats_away = map(int, info['match']['score'].split(' - '))
+        self.score_home, self.score_away = map(int, info['match']['score'].split(' - '))
         self.status = info['match']['status']
         self.events = info['event']
 
@@ -77,6 +78,7 @@ class Match:
 class Controller:
     def __init__(self):
         self.matches = []
+        self._generate_matches()
 
     def get_today_matches(self) -> dict:
         # arr = [2, 3, 4, 6, 45]
@@ -90,12 +92,12 @@ class Controller:
                          f'&secret={SECRET}&from=2020-12-12&to=2020-12-13')
             # print(json.loads(req.text))
             data = json.loads(req.text)
-            for dat in data['data']['match']:
+            for dat in data['data']['match'][:3]:
                 ans_dict[dat['id']] = dat
             return ans_dict
 
     def _generate_matches(self):
-        for id_match, data_of_match in self.get_today_matches().values():
+        for id_match, data_of_match in self.get_today_matches().items():
             self.matches.append(Match(id_match, data_of_match))
 
     def update_all_matches(self):
@@ -127,8 +129,12 @@ class Controller:
 
 
 if __name__ == '__main__':
-    cnr = Controller()
-    pprint(cnr.get_today_matches())
+    test = Controller()
+    test.update_all_matches()
+    match = test[1]
+    print(match.stats_away)
+    print()
+    print(match.stats_home)
     # today = get_today_matches()
     # # pprint(today)
     # first_id = list(today.keys())[10]
