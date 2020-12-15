@@ -1,3 +1,4 @@
+#!pip3 install PyTelegramBotAPI
 import telebot
 import random
 CHAT_ID = -1001209168677
