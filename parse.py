@@ -6,23 +6,6 @@ KEY = "qACKZM1CUVIaCa3g"
 SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
 
 
-def get_today_matches() -> dict:
-    # arr = [2, 3, 4, 6, 45]
-    leagues = [45]
-    ans_dict = dict()
-    for league in leagues:
-        # req = rq.get(
-        #     f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
-        #     f'={SECRET}&competition_id={num_lig}')
-        req = rq.get(f'http://livescore-api.com/api-client/scores/history.json?key={KEY}'
-                     f'&secret={SECRET}&from=2020-12-12&to=2020-12-13')
-        # print(json.loads(req.text))
-        data = json.loads(req.text)
-        for dat in data['data']['match']:
-            ans_dict[dat['id']] = dat
-        return ans_dict
-
-
 class Match:
     def __init__(self, match_id: int, data: dict):
         self.match_id = match_id
@@ -88,16 +71,64 @@ class Match:
         return self.events
 
 
+class Controller:
+    def __init__(self):
+        self.matches = []
+
+    def get_today_matches(self) -> dict:
+        # arr = [2, 3, 4, 6, 45]
+        leagues = [45]
+        ans_dict = dict()
+        for league in leagues:
+            # req = rq.get(
+            #     f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
+            #     f'={SECRET}&competition_id={num_lig}')
+            req = rq.get(f'http://livescore-api.com/api-client/scores/history.json?key={KEY}'
+                         f'&secret={SECRET}&from=2020-12-12&to=2020-12-13')
+            # print(json.loads(req.text))
+            data = json.loads(req.text)
+            for dat in data['data']['match']:
+                ans_dict[dat['id']] = dat
+            return ans_dict
+
+    def _generate_matches(self):
+        for id_match, data_of_match in self.get_today_matches().values():
+            self.matches.append(Match(id_match, data_of_match))
+
+    def update_all_matches(self):
+        for match in self.matches:
+            match.update()
+
+    def clear_matches(self):
+        for index, match in enumerate(self.matches):
+            if match.get_status() == 'FINISHED':
+                self.matches.pop(index)
+
+    def get_all_matches(self):
+        return self.matches
+
+    def match_by_index(self, index: int):
+        return self.matches[index]
+
+    def __getitem__(self, index):
+        return self.matches[index]
+
+    def __len__(self):
+        return len(self.matches)
+
+
 if __name__ == '__main__':
-    today = get_today_matches()
-    # pprint(today)
-    first_id = list(today.keys())[10]
-    first_data = list(today.values())[10]
-    pprint(first_id)
-    match = Match(first_id, first_data)
-    match.update()
-    pprint(match.stats_home)
-    print(match.score_home, match.stats_away, match.team_home)
+    cnr = Controller()
+    pprint(cnr.get_today_matches())
+    # today = get_today_matches()
+    # # pprint(today)
+    # first_id = list(today.keys())[10]
+    # first_data = list(today.values())[10]
+    # pprint(first_id)
+    # match = Match(first_id, first_data)
+    # match.update()
+    # pprint(match.stats_home)
+    # print(match.score_home, match.stats_away, match.team_home)
     # print("ID:", first_id)
     # print()
     # pprint(get_match_events(first_id))
