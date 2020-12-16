@@ -1,5 +1,6 @@
 import requests as rq
 import json
+from summery_to_text import summery_to_text
 from pprint import pprint
 
 KEY = "qACKZM1CUVIaCa3g"
@@ -55,11 +56,16 @@ class Match:
                      f"{self.match_id}&sort=5")
         return json.loads(req.text)['data']
 
-    def get_summary(self) -> dict:
+    def get_summary(self) -> str:
         req = rq.get(f'http://livescore-api.com/api-client/matches/stats.json?match_id='
                      f'{self.match_id}'
                      f'&key={KEY}&secret={SECRET}')
-        return dict(json.loads(req.text)['data'])
+        result = dict(json.loads(req.text)['data'])
+        result['score_home'] = self.score_home
+        result['score_away'] = self.score_away
+        result['team_home'] = self.team_home
+        result['team_away'] = self.team_away
+        return summery_to_text(result)
 
     def get_player_stats(self, name: str) -> dict:
         return self.stats_home['h'][name] if name in self.stats_home['h'].keys() \
@@ -131,8 +137,8 @@ class Controller:
 if __name__ == '__main__':
     test = Controller()
     test.update_all_matches()
-    match = test[1]
-    print(match.stats_away)
+    match = test[0]
+    print(match.get_summary())
     print()
     print(match.stats_home)
     # today = get_today_matches()
