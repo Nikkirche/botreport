@@ -17,7 +17,7 @@ def get_types_of_game(goals_1, goals_2, team1, team2):
 
 
 def generate_text_for_wins(game_type, winner, loser):
-    # 0 for loser ,1 for winner
+    # 0 for loser ,1  for winner
     from_which_side = random.random()
     if game_type == "unanswered":
         if from_which_side:

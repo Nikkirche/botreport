@@ -2,9 +2,20 @@ import random
 
 import parse
 
+
+def get_match():
+    dct = parse.Controller().get_today_matches()
+    f_id = list(dct.keys())[0]
+    dat = list(dct.values())[0]
+    match = parse.Match(f_id, dat)
+    match.update()
+    return match
+
+
+active, passive = 0, 0
+score_active, score_passive = 0, 0
 events_with_generated_text = dict()
-score_away = 0
-score_home = 0
+match = get_match()
 
 
 def get_type_of_event(event):
@@ -38,7 +49,7 @@ def get_type_of_event(event):
 
 def get_types_of_goal(event):
     types = []
-    if (abs(score_away - score_home) > 2):
+    if abs(score_active - score_passive) > 2:
         types.append("DEFEATING")
     else:
         types.append("BASE1")
@@ -97,14 +108,34 @@ def generate_text_for_goals(event, types, from_which_side):
     return "test"
 
 
-dct = parse.Controller().get_today_matches()
-f_id = list(dct.keys())[0]
-dat = list(dct.values())[0]
-match = parse.Match(f_id, dat)
-match.update()
-score_home = match.score_home
-score_away = match.score_away
-events = match.get_events()
-print(events)
-for i in events:
-    print(get_type_of_event(i))
+def get_active_and_passive_team(event):
+    global active, passive
+    global score_active, score_passive
+    active, passive, score_active, score_passive = (
+    match.team_home, match.team_away, int(match.score_home), int(match.score_away)) if event.get(
+        "home_away") == match.team_away else (
+    match.team_away, match.team_home, int(match.score_away), int(match.score_home))
+
+
+def generate():
+    events = match.get_events()
+    print(events)
+    for i in events:
+        get_active_and_passive_team(i)
+        print(get_type_of_event(i))
+
+
+generate()
+# For adding new template - add in generate_event_type function
+# if(*some case*):
+#   types.append(*name of this case*)
+# and in generate_text_event_type add
+#    if game_type == *name of this case*:
+#       if from_which_side:
+#           return your template for active
+#       else:
+#           return your template for passive
+# You can use events.get("player") for player name
+# events.get("time") for events time
+#  active,passive for team names(active is the intiator of event, passive the other one)
+# score_active and score_passive to get score of active and passive team
