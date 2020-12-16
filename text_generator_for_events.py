@@ -38,7 +38,7 @@ def get_type_of_event(event):
 
 def get_types_of_goal(event):
     types = []
-    if ():
+    if (abs(score_away - score_home) > 2):
         types.append("DEFEATING")
     else:
         types.append("BASE1")
@@ -49,27 +49,27 @@ def get_types_of_goal(event):
 
 
 def get_types_of_own_goal(event):
-    types = []
+    types = ["test"]
     return types
 
 
 def get_types_of_penalty_goals(event):
-    types = []
+    types = ["test"]
     return types
 
 
 def get_types_of_yellow_card(event):
-    types = []
+    types = ["test"]
     return types
 
 
 def get_types_of_yellow_red_card(event):
-    types = []
+    types = ["test"]
     return types
 
 
 def get_types_of_red_card(event):
-    types = []
+    types = ["test"]
     return types
 
 
