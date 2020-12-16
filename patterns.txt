@@ -1,0 +1,11 @@
+type = "YELLOW_CARD"
+And so {player} gets a yellow card.
+type = "YELLOW_RED_CARD"
+Another yellow card! {player} is sent off from the field!
+type = "RED_CARD"
+type = "GOAL"
+GOOOOOAL!!! {player}!!! Now that’s what I call football!
+GOOOOOAL!!! {player}! Where’s the defense of {passive} gone?
+type = "OWN_GOAL"
+type = "GOAL_PENALTY"
+exit
