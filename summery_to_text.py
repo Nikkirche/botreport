@@ -17,9 +17,9 @@ def summery_to_text(summery_data: dict) -> str:
         'attacks': int(summery_data['attacks'].split(':')[1]),
         'yellow_cards': int(summery_data['yellow_cards'].split(':')[1])
     }
-    pprint(team_winner)
-
-    pprint(team_loser)
+    # pprint(team_winner)
+    #
+    # pprint(team_loser)
     if team_winner['score'] < team_loser['score']:
         team_winner, team_loser = team_loser, team_winner
         result = winner_text(team_winner, team_loser)
@@ -28,7 +28,7 @@ def summery_to_text(summery_data: dict) -> str:
         result = winner_text(team_winner, team_loser)
     else:
         result = draw_text(team_winner, team_loser)
-    print(result)
+    # print(result)
     return result
 
 
@@ -49,7 +49,7 @@ def winner_text(team_winner: dict, team_loser: dict) -> str:
         f'and {team_loser["yellow_cards"]} yellow cards respectively.')
 
     if team_winner['attacks'] >= team_loser['attacks']:
-        result.append(f"A series of carefully planned attacks from {team_winner['attacks']} "
+        result.append(f"A series of carefully planned attacks from {team_winner['name_team']} "
                       f"has led them to a win – {team_winner['attacks']}:{team_loser['attacks']}.")
     else:
         result.append(f"Unsuccessful attacks from {team_loser['name_team']} "
@@ -63,7 +63,7 @@ def winner_text(team_winner: dict, team_loser: dict) -> str:
                       f'have shown their superiority.')
     else:
         result.append(f'Even after the end of the match, the victory of {team_winner["name_team"]} isn’t obvious.')
-    return " ".join(el for el in result)
+    return "\n".join(el for el in result)
 
 
 def draw_text(team_winner: dict, team_loser: dict) -> str:

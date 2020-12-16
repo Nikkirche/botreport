@@ -110,7 +110,7 @@ class Controller:
             #     f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
             #     f'={SECRET}&competition_id={competition}')
             req = rq.get(f'http://livescore-api.com/api-client/scores/history.json?key={KEY}'
-                         f'&secret={SECRET}&from=2020-12-12&to=2020-12-13&competition_id=2')
+                         f'&secret={SECRET}&from=2020-10-12&to=2020-12-13&competition_id=2')
             # print(json.loads(req.text))
             data = json.loads(req.text)
             for dat in data['data']['match'][:5]:
@@ -152,11 +152,11 @@ class Controller:
 if __name__ == '__main__':
     test = Controller()
     test.update_all_matches()
-    match = test[3]
+    match = test[2]
     # print(match.get_summary())
-    print()
+    print(match.get_summary())
     # print(match.stats_home)
-    print(match.count_penalty_home())
+    # print(match.count_penalty_home())
     # today = get_today_matches()
     # # pprint(today)
     # first_id = list(today.keys())[10]
