@@ -1,5 +1,6 @@
 from pprint import pprint
 
+
 def summery_to_text(summery_data: dict) -> str:
     result = ""
     team_winner = {
@@ -26,7 +27,7 @@ def summery_to_text(summery_data: dict) -> str:
     elif team_winner['score'] > team_loser['score']:
         result = winner_text(team_winner, team_loser)
     else:
-        pass
+        result = draw_text(team_winner, team_loser)
     print(result)
     return result
 
@@ -43,14 +44,15 @@ def winner_text(team_winner: dict, team_loser: dict) -> str:
         result.append(f"{team_winner['name_team']} possessed the ball for the entire game! No surprise they've won." \
                           f" {team_winner['possesion']}%.")
 
-    result.append(f'{team_winner["name_team"]} and {team_loser["name_team"]} have received {team_winner["yellow_cards"]} '
-                  f'and {team_loser["yellow_cards"]} yellow cards respectively.')
+    result.append(
+        f'{team_winner["name_team"]} and {team_loser["name_team"]} have received {team_winner["yellow_cards"]} '
+        f'and {team_loser["yellow_cards"]} yellow cards respectively.')
 
     if team_winner['attacks'] >= team_loser['attacks']:
         result.append(f"A series of carefully planned attacks from {team_winner['attacks']} "
                       f"has led them to a win – {team_winner['attacks']}:{team_loser['attacks']}.")
     else:
-        result.append(f"Unsuccessful attacks from {team_loser['attacks']} "
+        result.append(f"Unsuccessful attacks from {team_loser['name_team']} "
                       f"haven’t saved them from a defeat – {team_loser['attacks']}:{team_winner['attacks']}.")
     if team_loser['attacks'] + team_winner['attacks'] > 170:
         result.append("Extremely intense play – lots of attacks from both sides!")
@@ -61,9 +63,8 @@ def winner_text(team_winner: dict, team_loser: dict) -> str:
                       f'have shown their superiority.')
     else:
         result.append(f'Even after the end of the match, the victory of {team_winner["name_team"]} isn’t obvious.')
-    print(result)
     return " ".join(el for el in result)
 
 
 def draw_text(team_winner: dict, team_loser: dict) -> str:
-    pass
+    return "DRAW!!!"
