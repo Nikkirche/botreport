@@ -1,1 +1,1 @@
-# botreport
+# Новая редакция от Yandex
