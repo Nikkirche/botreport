@@ -4,10 +4,8 @@ import parse
 
 
 def get_match():
-    dct = parse.Controller().get_today_matches()
-    f_id = list(dct.keys())[0]
-    dat = list(dct.values())[0]
-    match = parse.Match(f_id, dat)
+    controller = parse.Controller()
+    match = controller[0]
     match.update()
     return match
 
