@@ -66,5 +66,24 @@ def winner_text(team_winner: dict, team_loser: dict) -> str:
     return " ".join(el for el in result)
 
 
-def draw_text(team_winner: dict, team_loser: dict) -> str:
-    return "DRAW!!!"
+def draw_text(team_home: dict, team_away: dict) -> str:
+    result = []
+    result.append(f"What a tense game the teams have equal scores, but the team {team_home['name_team']} got"
+                  f" {team_home['yellow_card']}, while {team_away['name_team']} got "
+                  f"{team_away['yellow_card']}.")
+    if team_home['possesion'] <= team_away['possesion']:
+        result.append(f"The match ended with the result {team_home['score']}:{team_away['score']} "
+                      f"It is strange that the team {team_away['name_team']} "
+                      f"did not win, because the percentage of possession "
+                      f"of the ball it has {team_away['possesion']}")
+    else:
+        result.append(f"The match ended with the result {team_home['score']}:{team_away['score']} "
+                      f"It is strange that the team {team_home['name_team']} "
+                      f"did not win, because the percentage of possession "
+                      f"of the ball it has {team_home['possesion']}")
+    if team_home['attacks'] + team_away['attacks'] > 170:
+        result.append("Extremely intense play – lots of attacks from both sides!")
+    else:
+        result.append("The match hasn’t got really intense – not many interesting attacks from any side.")
+
+    return ' '.join(result)
