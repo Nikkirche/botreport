@@ -48,7 +48,18 @@ class Match:
         self.counter_event = len(info['event']) - 1
         self.score_home, self.score_away = map(int, info['match']['score'].split(' - '))
         self.status = info['match']['status']
-        self.events = info['event']
+
+        print(type(info['event']))
+
+        pprint(info['event'])
+        result = {
+            'score_home': self.score_home,
+            'score_away': self.score_away,
+            'team_home': self.team_home,
+            'team_away': self.team_away,
+            'events': info['event']
+        }
+        self.events = result
 
     def _get_match_events(self) -> dict:
         req = rq.get(f"http://livescore-api.com/api-client/scores/events.json"
@@ -153,6 +164,8 @@ if __name__ == '__main__':
     test = Controller()
     test.update_all_matches()
     match = test[3]
+    match.update()
+    pprint(match.get_events())
     # print(match.get_summary())
     print()
     # print(match.stats_home)
