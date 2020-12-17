@@ -22,37 +22,7 @@ class Event():
             self.score_active = data.get("score_away")
             self.score_passive = data.get("score_home")
 
-
-def read_patterns():
-    file = open("patterns.txt")
-    current = -1
-    patterns = [[], [], [], [], [], []]
-    for line in file:
-        if line[:6] == "type =":
-            current = current + 1
-        elif line == "exit":
-            file.close()
-            break
-        else:
-            patterns[current].append(line.rstrip())
-    print(patterns)
-    return patterns
-
-
-class TextGenerator():
-    def generate(self):
-        controller = parse.Controller()
-        match = controller[0]
-        match.update()
-        events = match.get_events()
-        print(events)
-        patterns = read_patterns()
-        for i in events:
-            event = Event(i)
-            print(self.format_text(event, patterns))
-
-
-    def format_text(self,event,patterns):
+    def format_text(self, event, patterns):
         objects = dict(player=event.player, time=event.time, id_in_match=event.id_in_match,
                        active=event.active, passive=event.passive,
                        score_active=event.score_active, score_passive=event.score_passive)
@@ -77,4 +47,35 @@ class TextGenerator():
         return text
 
 
-TextGenerator().generate()
+def generate():
+    controller = parse.Controller()
+    match = controller[0]
+    match.update()
+    events = match.get_events()
+    print(events)
+    patterns = read_patterns()
+    for i in range(events):
+        event = Event(events(i))
+        print(event.format_text(event, patterns))
+
+
+def read_patterns():
+    file = open("patterns.txt")
+    current = -1
+    patterns = [[], [], [], [], [], []]
+    read_started = False
+    for line in file:
+        if  not read_started and line == "start":
+            read_started= True
+        elif  read_started and line[:6] == "type =":
+            current = current + 1
+        elif line == "exit":
+            file.close()
+            break
+        else:
+            patterns[current].append(line.rstrip())
+    print(patterns)
+    return patterns
+
+
+generate()

@@ -1,3 +1,5 @@
+#There are the patterns for gemrated text
+start
 type = "YELLOW_CARD"
 And so {player} gets a yellow card.
 {player} skhlopotal "gorchichnik"
@@ -7,8 +9,8 @@ Another yellow card! {player} is sent off from the field!
 {player} gets a second "gorchichnik" – one less player for {active}.
 type = "RED_CARD"
 type = "GOAL"
-GOOOOOAL!!! {player}!!! Now that’s what I call football!
-GOOOOOAL!!! {player}! Where’s the defense of {passive} gone?
+GOOOOOAL!!! {player}!!!{score_active}:{score_passive}! Now that’s what I call football!
+GOOOOOAL!!! {player}!{score_active}:{score_passive}! Where’s the defense of {passive} gone?
 type = "OWN_GOAL"
 type = "GOAL_PENALTY"
 exit
