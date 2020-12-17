@@ -2,6 +2,7 @@ import requests as rq
 import json
 from summery_to_text import summery_to_text
 from pprint import pprint
+from telegramm_write_bot import send_message_to_channel
 
 KEY = "qACKZM1CUVIaCa3g"
 SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
@@ -146,6 +147,7 @@ class Controller:
     def clear_matches(self):
         for index, match in enumerate(self.matches):
             if match.get_status() == 'FINISHED':
+                send_message_to_channel("SUMMERY", match.get_summary())
                 self.matches.pop(index)
 
     def get_all_matches(self):
@@ -167,6 +169,7 @@ if __name__ == '__main__':
     match = test[3]
     match.update()
     pprint(match.get_events())
+    test.clear_matches()
     # print(match.get_summary())
 
     # print(match.stats_home)
