@@ -27,23 +27,23 @@ class Event():
                        active=event.active, passive=event.passive,
                        score_active=event.score_active, score_passive=event.score_passive)
         if event.type == "YELLOW_CARD":
-            i = random.randint(0, len(patterns[0]) - 1)
-            text = patterns[0][i].format(**objects)
+            i = random.randint(0, len(patterns["YELLOW_CARD"]) - 1)
+            text = patterns["YELLOW_CARD"][i].format(**objects)
         elif event.type == "YELLOW_RED_CARD":
-            i = random.randint(0, len(patterns[1]) - 1)
-            text = patterns[1][i].format(**objects)
+            i = random.randint(0, len(patterns["YELLOW_RED_CARD"]) - 1)
+            text = patterns["YELLOW_RED_CARD"][i].format(**objects)
         elif event.type == "RED_CARD":
-            i = random.randint(0, len(patterns[2]) - 1)
-            text = patterns[2][i].format(**objects)
+            i = random.randint(0, len(patterns["RED_CARD"]) - 1)
+            text = patterns["RED_CARD"][i].format(**objects)
         elif event.type == "GOAL":
-            i = random.randint(0, len(patterns[3]) - 1)
-            text = patterns[3][i].format(**objects)
+            i = random.randint(0, len(patterns["GOAL"]) - 1)
+            text = patterns["GOAL"][i].format(**objects)
         elif event.type == "OWN_GOAL":
-            i = random.randint(0, len(patterns[4]) - 1)
-            text = patterns[4][i].format(**objects)
+            i = random.randint(0, len(patterns["OWN_GOAL"]) - 1)
+            text = patterns["OWN_GOAL"][i].format(**objects)
         elif event.type == "GOAL_PENALTY":
-            i = random.randint(0, len(patterns[5]) - 1)
-            text = patterns[5][i].format(**objects)
+            i = random.randint(0, len(patterns["GOAL_PENALTY"]) - 1)
+            text = patterns["GOAL_PENALTY"][i].format(**objects)
         return text
 
 
@@ -54,24 +54,25 @@ def generate():
     events = match.get_events()
     print(events)
     patterns = read_patterns()
-    for i in range(events):
-        event = Event(events(i))
+    for i in events:
+        event = Event(i)
         print(event.format_text(event, patterns))
 
 
 def read_patterns():
     file = open("patterns.txt")
-    current = -1
-    patterns = [[], [], [], [], [], []]
+    patterns = {"YELLOW_CARD":[],"YELLOW_RED_CARD":[],"RED_CARD":[],"GOAL":[],"OWN_GOAL":[],"GOAL_PENALTY":[]}
     read_started = False
     for line in file:
-        if  not read_started and line == "start":
+        if   not read_started and line == "start\n":
             read_started= True
         elif  read_started and line[:6] == "type =":
-            current = current + 1
+            current = line[8:len(line)-2]
         elif line == "exit":
             file.close()
             break
+        elif line[0] =="#":
+            pass
         else:
             patterns[current].append(line.rstrip())
     print(patterns)
