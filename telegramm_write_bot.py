@@ -1,16 +1,23 @@
 #!pip3 install PyTelegramBotAPI
 import telebot
 import random
+from requests import post
+
 CHAT_ID = -1001209168677
-TOKEN = "1487993906:AAEOqag-VZFj1rfYo3zQDEFmcUGspY-zh50"
-bot = telebot.TeleBot(TOKEN) 
-def send_message_to_channel(type_event, text, chat_id):
+TOKEN = "916274685:AAG-ZWgt8Cm_tehotyM4om10dWn2lJAOGJM"
+bot = telebot.TeleBot(TOKEN)
+
+
+def send_message_to_channel(type_event, text, chat_id=CHAT_ID):
     bot.send_message(-1001209168677, text)
-    rnd=random.randint(1, 100)
-    if(rnd>=5 and rnd<=9):
-        if(type_event=='GOAL'):
-            bot.send_sticker(CHAT_ID, 'CAACAgIAAxkBAAEBrwxf2J9rjKdERUaj9SVf_mafW9wPJQACCwEAAladvQpOseemCPvtSR4E')
-        if(type_event=='PENALTI'):
-            bot.send_sticker(CHAT_ID, 'CAACAgIAAxkBAAEBrxFf2KKkfzHy5iLRY_XCTiSttfxYzAAC_wADVp29Ctqt-n3kvEAkHgQ')
-#send_message_to_channel('GOAL','GOAAAAAAAAAAAAAAAAAAL', CHAT_ID)
-#post to https://t.me/sportivit
+    rnd = random.randint(1, 100)
+    if 5 <= rnd <= 9:
+        if type_event == 'GOAL':
+            bot.send_sticker(CHAT_ID, TOKEN)
+        if type_event == 'PENALTI':
+            bot.send_sticker(CHAT_ID, TOKEN)
+
+
+# send_message_to_channel('GOAL', 'GOAAAAAAAAAAAAAAAAAAL', CHAT_ID)
+# post to https://t.me/sportivit
+# send_message_to_channel("123", "123123")

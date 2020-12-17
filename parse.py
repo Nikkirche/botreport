@@ -2,6 +2,7 @@ import requests as rq
 import json
 from summery_to_text import summery_to_text
 from pprint import pprint
+from telegramm_write_bot import send_message_to_channel
 
 KEY = "qACKZM1CUVIaCa3g"
 SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
@@ -29,6 +30,7 @@ class Match:
     def update(self):
         info = self._get_match_events()
         events = filter(lambda x: int(x['sort']) > self.counter_event, info['event'])
+        list_of_events = list(events)
         for event in events:
             team = self.stats_home if event['home_away'] == 'h' else self.stats_away
 
@@ -44,8 +46,8 @@ class Match:
                 self.stats_home = team
             else:
                 self.stats_away = team
-
         self.counter_event = len(info['event']) - 1
+
         self.score_home, self.score_away = map(int, info['match']['score'].split(' - '))
         self.status = info['match']['status']
 
@@ -57,7 +59,7 @@ class Match:
             'score_away': self.score_away,
             'team_home': self.team_home,
             'team_away': self.team_away,
-            'events': info['event']
+            'events': list_of_events
         }
         self.events = result
 
@@ -145,6 +147,7 @@ class Controller:
     def clear_matches(self):
         for index, match in enumerate(self.matches):
             if match.get_status() == 'FINISHED':
+                send_message_to_channel("SUMMERY", match.get_summary())
                 self.matches.pop(index)
 
     def get_all_matches(self):
@@ -162,14 +165,15 @@ class Controller:
 
 if __name__ == '__main__':
     test = Controller()
-    test.update_all_matches()
+    # test.update_all_matches()
     match = test[3]
     match.update()
     pprint(match.get_events())
+    test.clear_matches()
     # print(match.get_summary())
-    print()
+
     # print(match.stats_home)
-    print(match.count_penalty_home())
+
     # today = get_today_matches()
     # # pprint(today)
     # first_id = list(today.keys())[10]
