@@ -3,6 +3,7 @@ import json
 from summery_to_text import summery_to_text
 from pprint import pprint
 from telegramm_write_bot import send_message_to_channel
+from text_generator_for_events import *
 
 KEY = "qACKZM1CUVIaCa3g"
 SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
@@ -26,6 +27,8 @@ class Match:
         self.status = data['status']
 
         self.events = dict()
+
+        self.events_patterns = read_patterns()
 
     def update(self):
         info = self._get_match_events()
@@ -56,6 +59,9 @@ class Match:
             event['score_away'] = self.score_away
             event['team_home'] = self.team_home
             event['team_away'] = self.team_away
+
+            cls_event = Event(event)
+            send_message_to_channel('', cls_event.format_text(self.events_patterns))
 
         self.events = list_of_events
 
@@ -162,7 +168,7 @@ class Controller:
 if __name__ == '__main__':
     test = Controller()
     # test.update_all_matches()
-    match = test[3]
+    match = test[1]
     match.update()
     pprint(match.get_events())
     # test.clear_matches()
