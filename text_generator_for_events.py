@@ -26,6 +26,7 @@ class Event():
         objects = dict(player=self.player, time=self.time, id_in_match=self.id_in_match,
                        active=self.active, passive=self.passive,
                        score_active=self.score_active, score_passive=self.score_passive)
+
         if self.type == "YELLOW_CARD":
             i = random.randint(0, len(patterns["YELLOW_CARD"]) - 1)
             text = patterns["YELLOW_CARD"][i].format(**objects)
@@ -44,7 +45,7 @@ class Event():
         elif self.type == "GOAL_PENALTY":
             i = random.randint(0, len(patterns["GOAL_PENALTY"]) - 1)
             text = patterns["GOAL_PENALTY"][i].format(**objects)
-        return text
+        return self.active + '\n' + text
 
 
 def generate():

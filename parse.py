@@ -144,6 +144,8 @@ class Controller:
     def add_new_matches(self):
         matches = self.get_today_matches()
         for id_match, data in matches.items():
+            if data['status'] == 'FINISHED':
+                continue
             if id_match not in self.matches:
                 self.matches.append(Match(id_match, data))
 
@@ -174,6 +176,8 @@ def test_load():
             controller.update_all_matches()
             controller.add_new_matches()
             sleep(180)
+        except KeyboardInterrupt:
+            exit()
         except BaseException as ex:
             print(ex)
 
