@@ -61,7 +61,7 @@ class Match:
             event['team_away'] = self.team_away
 
             cls_event = Event(event)
-            send_message_to_channel('', cls_event.format_text(self.events_patterns))
+            send_message_to_channel(event['event'], cls_event.format_text(self.events_patterns))
 
         self.events = list_of_events
 
