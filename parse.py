@@ -4,6 +4,7 @@ from summery_to_text import summery_to_text
 from pprint import pprint
 from telegramm_write_bot import send_message_to_channel
 from text_generator_for_events import *
+from time import sleep
 
 KEY = "qACKZM1CUVIaCa3g"
 SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
@@ -121,11 +122,11 @@ class Controller:
         competitions = COMPETITIONS
         ans_dict = dict()
         for competition in competitions:
-            # req = rq.get(
-            #     f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
-            #     f'={SECRET}&competition_id={competition}')
-            req = rq.get(f'http://livescore-api.com/api-client/scores/history.json?key={KEY}'
-                         f'&secret={SECRET}&from=2020-12-12&to=2020-12-13&competition_id=2')
+            req = rq.get(
+                f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
+                f'={SECRET}&competition_id={competition}')
+            # req = rq.get(f'http://livescore-api.com/api-client/scores/history.json?key={KEY}'
+            #              f'&secret={SECRET}&from=2020-12-12&to=2020-12-13&competition_id=2')
             # print(json.loads(req.text))
             data = json.loads(req.text)
             for dat in data['data']['match'][:5]:
@@ -165,12 +166,26 @@ class Controller:
         return len(self.matches)
 
 
+def test_load():
+    controller = Controller()
+    while True:
+        try:
+            controller.clear_matches()
+            controller.update_all_matches()
+            controller.add_new_matches()
+            sleep(180)
+        except BaseException as ex:
+            print(ex)
+
+
 if __name__ == '__main__':
-    test = Controller()
+    test_load()
+    # pass
+    # test = Controller()
     # test.update_all_matches()
-    match = test[1]
-    match.update()
-    pprint(match.get_events())
+    # match = test[1]
+    # match.update()
+    # pprint(match.get_events())
     # test.clear_matches()
     # print(match.get_summary())
 
