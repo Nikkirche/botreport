@@ -115,7 +115,7 @@ class Match:
 class Controller:
     def __init__(self):
         self.matches = []
-        self._generate_matches()
+        self.add_new_matches()
 
     def get_today_matches(self) -> dict:
         # arr = [2, 3, 4, 6, 45]
