@@ -8,7 +8,7 @@ from time import sleep
 
 KEY = "qACKZM1CUVIaCa3g"
 SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
-COMPETITIONS = [2, 3]
+COMPETITIONS = [2, 3, 4]
 
 
 class Match:
@@ -56,6 +56,7 @@ class Match:
         self.score_home, self.score_away = map(int, info['match']['score'].split(' - '))
         self.status = info['match']['status']
         if self.status == 'IN PLAY' and prev_status == 'NOT STARTED':
+            print("MATCH STARTED", self.team_home, self.team_away)
             send_message_to_channel('', f"Match between {self.team_home} and {self.team_away} was started")
 
         for event in list_of_events:
@@ -66,7 +67,7 @@ class Match:
 
             cls_event = Event(event)
             send_message_to_channel(event['event'], cls_event.format_text(self.events_patterns))
-
+        print(self.events)
         self.events = list_of_events
 
     def _get_match_events(self) -> dict:
@@ -132,9 +133,9 @@ class Controller:
             #              f'&secret={SECRET}&from=2020-12-12&to=2020-12-13&competition_id=2')
             # print(json.loads(req.text))
             data = json.loads(req.text)
-            if not data['success']:
-                print("Something went wrong")
-                return {}
+            # if not data['success']:
+            #     print("Something went wrong")
+            #     return {}
             for dat in data['data']['match']:
                 ans_dict[dat['id']] = dat
             return ans_dict
@@ -151,6 +152,7 @@ class Controller:
         matches = self.get_today_matches()
         for id_match, data in matches.items():
             if data['status'] == 'FINISHED':
+                print("From add new match function: Match finished")
                 continue
             if id_match not in self.matches:
                 self.matches.append(Match(id_match, data))
@@ -158,6 +160,7 @@ class Controller:
     def clear_matches(self):
         for index, match in enumerate(self.matches):
             if match.get_status() == 'FINISHED':
+                pprint(match.get_summary())
                 send_message_to_channel("SUMMERY", match.get_summary())
                 self.matches.pop(index)
 
@@ -178,6 +181,7 @@ def test_load():
     controller = Controller()
     while True:
         try:
+            print(len(controller))
             controller.clear_matches()
             controller.update_all_matches()
             controller.add_new_matches()
@@ -185,7 +189,8 @@ def test_load():
             exit()
         except BaseException as ex:
             print(ex)
-        sleep(180)
+        print('iteration')
+        sleep(120)
 
 
 if __name__ == '__main__':
