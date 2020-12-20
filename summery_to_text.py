@@ -44,25 +44,25 @@ def winner_text(team_winner: dict, team_loser: dict) -> str:
         result.append(f"{team_winner['name_team']} possessed the ball for the entire game {team_winner['possesion']}%!"
                       f" No surprise they've won.")
 
-        result.append(
+    result.append(
             f'{team_winner["name_team"]} and {team_loser["name_team"]} have received {team_winner["yellow_cards"]} '
             f'and {team_loser["yellow_cards"]} yellow cards respectively.')
 
-        if team_winner['attacks'] >= team_loser['attacks']:
-            result.append(f"A series of carefully planned attacks from {team_winner['attacks']} "
+    if team_winner['attacks'] >= team_loser['attacks']:
+        result.append(f"A series of carefully planned attacks from {team_winner['attacks']} "
                           f"has led them to a win – {team_winner['attacks']}:{team_loser['attacks']}.")
-        else:
-            result.append(f"Unsuccessful attacks from {team_loser['name_team']} "
+    else:
+        result.append(f"Unsuccessful attacks from {team_loser['name_team']} "
                           f"haven’t saved them from a defeat – {team_loser['attacks']}:{team_winner['attacks']}.")
-        if team_loser['attacks'] + team_winner['attacks'] > 170:
-            result.append("Extremely intense play – lots of attacks from both sides!")
-        else:
-            result.append("The match hasn’t got really intense – not many interesting attacks from any side.")
-        if team_winner['score'] - team_loser['score'] >= 2:
-            result.append(f'A professional play throughout the match – {team_winner["name_team"]} '
-                          f'have shown their superiority.')
-        else:
-            result.append(f'Even after the end of the match, the victory of {team_winner["name_team"]} isn’t obvious.')
+    if team_loser['attacks'] + team_winner['attacks'] > 170:
+        result.append("Extremely intense play – lots of attacks from both sides!")
+    else:
+        result.append("The match hasn’t got really intense – not many interesting attacks from any side.")
+    if team_winner['score'] - team_loser['score'] >= 2:
+        result.append(f'A professional play throughout the match – {team_winner["name_team"]} '
+                          f'haveч shown their superiority.')
+    else:
+        result.append(f'Even after the end of the match, the victory of {team_winner["name_team"]} isn’t obvious.')
     return " ".join(el for el in result)
 
 
