@@ -52,8 +52,8 @@ class Match:
             else:
                 self.stats_away = team
         self.counter_event = len(info['event']) - 1
-
-        self.score_home, self.score_away = map(int, info['match']['score'].split(' - '))
+        if info['match']['score'] != '? - ?':
+            self.score_home, self.score_away = map(int, info['match']['score'].split(' - '))
         self.status = info['match']['status']
         if self.status == 'IN PLAY' and prev_status == 'NOT STARTED':
             print("MATCH STARTED", self.team_home, self.team_away)
