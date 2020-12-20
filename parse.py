@@ -129,7 +129,10 @@ class Controller:
             #              f'&secret={SECRET}&from=2020-12-12&to=2020-12-13&competition_id=2')
             # print(json.loads(req.text))
             data = json.loads(req.text)
-            for dat in data['data']['match'][:5]:
+            if not data['success']:
+                print("Something went wrong")
+                return {}
+            for dat in data['data']['match']:
                 ans_dict[dat['id']] = dat
             return ans_dict
 
@@ -175,11 +178,12 @@ def test_load():
             controller.clear_matches()
             controller.update_all_matches()
             controller.add_new_matches()
-            sleep(180)
+
         except KeyboardInterrupt:
             exit()
         except BaseException as ex:
             print(ex)
+        sleep(180)
 
 
 if __name__ == '__main__':
