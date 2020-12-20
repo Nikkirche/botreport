@@ -7,7 +7,12 @@ class Event():
     def __init__(self, data):
         self.id = data.get("id")
         self.match_id = data.get("match_id")
-        self.player = data.get("player").lower().capitalize()
+        
+        surname, name = data.get("player").split()
+        name = name.lower().capitalize()
+        surname = surname.lower().capitalize()
+        self.player = surname + ' ' + name
+
         self.time = data.get("time")
         self.type = data.get("event")
         self.id_in_match = data.get("sort")
