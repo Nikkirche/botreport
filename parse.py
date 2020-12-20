@@ -57,7 +57,7 @@ class Match:
         self.status = info['match']['status']
         if self.status == 'IN PLAY' and prev_status == 'NOT STARTED':
             print("MATCH STARTED", self.team_home, self.team_away)
-            send_message_to_channel('', f"Match between {self.team_home} and {self.team_away} was started")
+            send_message_to_channel('', f"Match between {self.team_home} and {self.team_away} has started")
 
         for event in list_of_events:
             event['score_home'] = self.score_home
