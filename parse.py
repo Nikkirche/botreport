@@ -32,6 +32,7 @@ class Match:
         self.events_patterns = read_patterns()
 
     def update(self):
+        prev_status = self.status
         info = self._get_match_events()
         events = filter(lambda x: int(x['sort']) > self.counter_event, info['event'])
         list_of_events = list(events)
@@ -54,6 +55,8 @@ class Match:
 
         self.score_home, self.score_away = map(int, info['match']['score'].split(' - '))
         self.status = info['match']['status']
+        if self.status == 'IN PLAY' and prev_status == 'NOT STARTED':
+            send_message_to_channel('', f"Match between {self.team_home} and {self.team_away} was started")
 
         for event in list_of_events:
             event['score_home'] = self.score_home
@@ -178,7 +181,6 @@ def test_load():
             controller.clear_matches()
             controller.update_all_matches()
             controller.add_new_matches()
-
         except KeyboardInterrupt:
             exit()
         except BaseException as ex:
