@@ -66,6 +66,7 @@ class Match:
             event['team_away'] = self.team_away
 
             cls_event = Event(event)
+            print(event)
             send_message_to_channel(event['event'], cls_event.format_text(self.events_patterns))
         print(self.events)
         self.events = list_of_events
@@ -119,7 +120,6 @@ class Match:
 class Controller:
     def __init__(self):
         self.matches = []
-        self.add_new_matches()
 
     def get_today_matches(self) -> dict:
         # arr = [2, 3, 4, 6, 45]
@@ -129,6 +129,7 @@ class Controller:
             req = rq.get(
                 f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
                 f'={SECRET}&competition_id={competition}')
+
             # req = rq.get(f'http://livescore-api.com/api-client/scores/history.json?key={KEY}'
             #              f'&secret={SECRET}&from=2020-12-12&to=2020-12-13&competition_id=2')
             # print(json.loads(req.text))
@@ -138,7 +139,9 @@ class Controller:
             #     return {}
             for dat in data['data']['match']:
                 ans_dict[dat['id']] = dat
-            return ans_dict
+        print(ans_dict)
+        print("KEYS COUNTER:", len(ans_dict.keys()))
+        return ans_dict
 
     def _generate_matches(self):
         for id_match, data_of_match in self.get_today_matches().items():

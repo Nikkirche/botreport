@@ -45,6 +45,7 @@ class Event():
         elif self.type == "GOAL_PENALTY":
             i = random.randint(0, len(patterns["GOAL_PENALTY"]) - 1)
             text = patterns["GOAL_PENALTY"][i].format(**objects)
+        print("----------------------\n", f"{self.active} vs {self.passive}\n{text}", '--------------------\n', sep='')
         return f"{self.active} vs {self.passive}\n{text}"
 
 
