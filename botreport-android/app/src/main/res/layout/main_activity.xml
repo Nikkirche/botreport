@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:background="#FFFFFF"
+    android:orientation="vertical">
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:name="com.example.botreport_android.main.NewsFlowFragment"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     </androidx.fragment.app.FragmentContainerView>
 
