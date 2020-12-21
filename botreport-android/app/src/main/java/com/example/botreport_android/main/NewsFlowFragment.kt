@@ -6,9 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.arellomobile.mvp.MvpAppCompatFragment
 import com.example.botreport_android.R
 import com.example.botreport_android.presenter.NewsFlowPresenter
 import com.example.botreport_android.ui.ArticleFeedFragment
@@ -18,25 +19,22 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.onEach
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
+import moxy.ktx.moxyPresenter
+
 import reactivecircus.flowbinding.android.view.clicks
 import javax.inject.Inject
 import javax.inject.Provider
-
+import androidx.lifecycle.lifecycleScope
+import com.example.botreport_android.presenter.MainPresenter
+import com.example.botreport_android.ui.SettingsFlowFragment
+import kotlinx.coroutines.flow.launchIn
+import moxy.MvpAppCompatFragment
 
 @AndroidEntryPoint
-class NewsFragment : MvpAppCompatFragment(), NewsFlowView {
-    @InjectPresenter
-    internal lateinit var flowPresenter: NewsFlowPresenter
-
+class NewsFlowFragment : MvpAppCompatFragment(), NewsFlowView {
     @Inject
-    lateinit var flowPresenterProvider: Provider<NewsFlowPresenter>
-
-    @ProvidePresenter
-    fun providePresenter(): NewsFlowPresenter? {
-        return flowPresenterProvider.get()
-    }
+    lateinit var presenterProvider: Provider<NewsFlowPresenter>
+    private val presenter: NewsFlowPresenter by moxyPresenter { presenterProvider.get() }
 
     private lateinit var viewAdapter: ViewAdapter
     private lateinit var viewPager: ViewPager2
@@ -50,9 +48,11 @@ class NewsFragment : MvpAppCompatFragment(), NewsFlowView {
             container, false
         )
         val buttonToSetting = view.findViewById<ImageButton>(R.id.button_to_settings)
-        buttonToSetting.clicks().onEach {
 
-        }
+        buttonToSetting.clicks().onEach {
+            presenter.openSettings()
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
+
         return view
     }
 
@@ -62,14 +62,21 @@ class NewsFragment : MvpAppCompatFragment(), NewsFlowView {
         viewPager.adapter = viewAdapter
         val tabLayout: TabLayout = view.findViewById(R.id.menu)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            if(position==0){
+            if (position == 0) {
                 tab.text = resources.getString(R.string.live_news)
-            }
-            else{
+            } else {
                 tab.text = resources.getString(R.string.articles)
             }
             viewPager.setCurrentItem(tab.position, true)
         }.attach()
+    }
+
+    override fun goToSettings() {
+        (activity as MainActivity).supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            add<SettingsFlowFragment>(R.id.main)
+            addToBackStack("settings")
+        }
     }
 
 }
@@ -80,11 +87,10 @@ class ViewAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
     override fun createFragment(position: Int): Fragment {
         // Return a NEW fragment instance in createFragment(int)
-        if(position==0) {
-           return LiveNewsFeedFragment()
-        }
-        else{
-           return ArticleFeedFragment()
+        if (position == 0) {
+            return LiveNewsFeedFragment()
+        } else {
+            return ArticleFeedFragment()
         }
     }
 }
