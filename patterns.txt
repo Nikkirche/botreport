@@ -1,4 +1,4 @@
-#There are the patterns for gemrated text
+#There are the patterns for genarated text
 start
 type = "YELLOW_CARD"
 And so {player} gets a yellow card.
