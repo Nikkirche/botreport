@@ -14,7 +14,7 @@ def send_message_to_channel(type_event, text, chat_id=CHAT_ID):
     if 5 <= rnd <= 9:
         if type_event == 'GOAL':
             bot.send_sticker(CHAT_ID, TOKEN)
-        if type_event == 'PENALTI':
+        if type_event == 'PENALTY':
             bot.send_sticker(CHAT_ID, TOKEN)
 
 

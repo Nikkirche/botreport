@@ -1,4 +1,4 @@
-#!pip3 install PyTelegramBotAPI
+# !pip3 install PyTelegramBotAPI
 # !pip3 install gtts
 import telebot
 import random
@@ -12,6 +12,8 @@ bot = telebot.TeleBot(TOKEN)
 
 def send_message_to_channel(type_event, text, chat_id=CHAT_ID):
     bot.send_message(chat_id, text, parse_mode='markdown')
+    if type_event == 'GOAL':
+        bot.send_sticker(CHAT_ID, 'CAACAgIAAxkBAAEBrwxf2J9rjKdERUaj9SVf_mafW9wPJQACCwEAAladvQpOseemCPvtSR4E')
     # new_text = ''
     # for char in text:
     #     try:
@@ -29,7 +31,7 @@ def send_message_to_channel(type_event, text, chat_id=CHAT_ID):
     # if 5 <= rnd <= 9:
     #     if type_event == 'GOAL':
     #         bot.send_sticker(CHAT_ID, 'CAACAgIAAxkBAAEBrwxf2J9rjKdERUaj9SVf_mafW9wPJQACCwEAAladvQpOseemCPvtSR4E')
-    #     if type_event == 'PENALTI':
+    #     if type_event == 'PENALTY':
     #         bot.send_sticker(CHAT_ID, 'CAACAgIAAxkBAAEBrxFf2KKkfzHy5iLRY_XCTiSttfxYzAAC_wADVp29Ctqt-n3kvEAkHgQ')
 
 # send_message_to_channel('GOAL', 'GOAAAAAAAAAAAAAAAAAAL', CHAT_ID)

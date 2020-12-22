@@ -2,7 +2,7 @@ import requests as rq
 import json
 from summary_to_text import summary_to_text
 from pprint import pprint
-from telegramm_write_bot import send_message_to_channel
+from telegram_write_bot import send_message_to_channel
 from text_generator_for_events import *
 from time import sleep
 import infodata
@@ -135,9 +135,7 @@ class Controller:
         competitions = COMPETITIONS
         ans_dict = dict()
         for competition in competitions:
-            req = rq.get(
-                f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
-                f'={SECRET}&competition_id={competition}')
+            req = rq.get('http://livescore-api.com/api-client/scores/history.json?key=qACKZM1CUVIaCa3g&secret=GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps&from=2020-12-12&to=2020-12-14&&competition_id=2')
 
             # req = rq.get(f'http://livescore-api.com/api-client/scores/history.json?key={KEY}'
             #              f'&secret={SECRET}&from=2020-12-12&to=2020-12-13&competition_id=2')
@@ -163,7 +161,7 @@ class Controller:
     def add_new_matches(self):
         matches = self.get_today_matches()
         for id_match, data in matches.items():
-            if data['status'] == 'FINISHED':
+            if data['status'] != 'FINISHED':
                 print("From add new match function: Match finished")
                 continue
             if id_match not in self.matches:
@@ -195,8 +193,8 @@ def test_load():
         try:
             print(len(controller))
             controller.clear_matches()
-            controller.update_all_matches()
             controller.add_new_matches()
+            controller.update_all_matches()
         except KeyboardInterrupt:
             exit()
         except BaseException as ex:
