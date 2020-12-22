@@ -5,10 +5,14 @@ from pprint import pprint
 from telegramm_write_bot import send_message_to_channel
 from text_generator_for_events import *
 from time import sleep
+import infodata
+from random import random, choice
+from infodata import InfoSource, sportsdb
+from facts import *
 
 KEY = "qACKZM1CUVIaCa3g"
 SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
-COMPETITIONS = [2, 3, 4]
+COMPETITIONS = [1, 2, 3, 4]
 
 
 class Match:
@@ -31,7 +35,7 @@ class Match:
 
         self.events_patterns = read_patterns()
 
-    def update(self):
+    def update(self, generator):
         prev_status = self.status
         info = self._get_match_events()
         events = filter(lambda x: int(x['sort']) > self.counter_event, info['event'])
@@ -66,8 +70,9 @@ class Match:
             event['team_away'] = self.team_away
 
             cls_event = Event(event)
-            print(event)
-            send_message_to_channel(event['event'], cls_event.format_text(self.events_patterns))
+            text_event = cls_event.format_text(self.events_patterns)
+            text_fact = generator.trivia_event(event)
+            send_message_to_channel(event['event'], text_event + ' \n\n' + text_fact)
         print(self.events)
         self.events = list_of_events
 
@@ -121,8 +126,12 @@ class Controller:
     def __init__(self):
         self.matches = []
 
+        sapi = sportsdb.SportsDBInfoSource()
+
+        aggregator = InfoAggregator([sapi])
+        self.generator = TriviaGenerator(aggregator, DEFAULT_TEAM, DEFAULT_PLAYER)
+
     def get_today_matches(self) -> dict:
-        # arr = [2, 3, 4, 6, 45]
         competitions = COMPETITIONS
         ans_dict = dict()
         for competition in competitions:
@@ -149,7 +158,7 @@ class Controller:
 
     def update_all_matches(self):
         for match in self.matches:
-            match.update()
+            match.update(self.generator)
 
     def add_new_matches(self):
         matches = self.get_today_matches()
