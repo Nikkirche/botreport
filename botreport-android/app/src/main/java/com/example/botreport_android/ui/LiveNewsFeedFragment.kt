@@ -1,11 +1,15 @@
 package com.example.botreport_android.ui
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.util.TimeUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.add
@@ -14,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.botreport_android.R
 import com.example.botreport_android.adapters.LiveNewsAdapter
-import com.example.botreport_android.databinding.ItemLiveNewsBinding
 import com.example.botreport_android.databinding.LiveNewsFeedFragmentBinding
 import com.example.botreport_android.entities.LiveEvent
 import com.example.botreport_android.entities.LiveNews
@@ -31,8 +34,11 @@ import moxy.ktx.moxyPresenter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.sql.Time
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class LiveNewsFeedFragment : MvpAppCompatFragment(), LiveNewsFeedView,
@@ -44,9 +50,40 @@ class LiveNewsFeedFragment : MvpAppCompatFragment(), LiveNewsFeedView,
     lateinit var recyclerAdapter: LiveNewsAdapter
     private var _binding: LiveNewsFeedFragmentBinding? = null
     private val binding get() = _binding!!
+    private var shortAnimationDuration: Int = 0
+    lateinit var progressBar: ProgressBar
     override fun onStart() {
         super.onStart()
-        presenter.firstlyLoadNews()
+        //presenter.firstlyLoadNews()
+        Log.v("time", Calendar.getInstance().timeInMillis.toString())
+        val api = BotReportApi.retrofitService.getLiveEvents()
+        launch(Dispatchers.Main) {
+            // Try catch block to handle exceptions when calling the API.
+            try {
+                api.enqueue(object : Callback<LiveNews> {
+                    override fun onFailure(call: Call<LiveNews>, t: Throwable) {
+                        Log.e("network", call.request().url().toString())
+                        Log.e("network", t.toString())
+
+                    }
+
+                    override fun onResponse(call: Call<LiveNews>, response: Response<LiveNews>) {
+                        Log.e("network", response.body().toString())
+                        if (response.body() != null)
+                            setInAdapter(response.body()!!.liveNews as ArrayList<LiveEvent>)
+
+                    }
+                })
+            }
+            catch (e:Exception){
+            }
+            finally {
+                Log.v("time", Calendar.getInstance().timeInMillis.toString())
+            }
+
+
+
+        }
 
     }
 
@@ -62,30 +99,10 @@ class LiveNewsFeedFragment : MvpAppCompatFragment(), LiveNewsFeedView,
         recyclerAdapter = context?.let { LiveNewsAdapter(it, parentFragmentManager) }!!
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = recyclerAdapter
-        val api = BotReportApi.retrofitService.getLiveEvents()
-        launch(Dispatchers.Main) {
-            // Try catch block to handle exceptions when calling the API.
-            binding.progressBar.visibility = View.VISIBLE
-            try {
-                api.enqueue(object : Callback<LiveNews> {
-                    override fun onFailure(call: Call<LiveNews>, t: Throwable) {
-                        Log.e("network", call.request().url().toString())
-                        Log.e("network", t.toString())
-                    }
+        recyclerView.setItemViewCacheSize(3)
+        shortAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
+        progressBar = binding.progressBar
 
-                    override fun onResponse(call: Call<LiveNews>, response: Response<LiveNews>) {
-                        Log.e("network", response.body().toString())
-                        if (response.body() != null)
-                            setInAdapter(response.body()!!.liveNews as ArrayList<LiveEvent>)
-
-                    }
-                })
-            }
-            catch (e:Exception){
-            }
-            binding.progressBar.visibility = View.VISIBLE
-
-        }
             return view
         }
 
@@ -96,8 +113,36 @@ class LiveNewsFeedFragment : MvpAppCompatFragment(), LiveNewsFeedView,
 
         override fun setInAdapter(result: ArrayList<LiveEvent>) {
             recyclerAdapter.setItems(result)
+            crossfade()
+            Log.v("time", Calendar.getInstance().timeInMillis.toString())
         }
+    private fun crossfade() {
+        recyclerView.apply {
+            // Set the content view to 0% opacity but visible, so that it is visible
+            // (but fully transparent) during the animation.
+            alpha = 0f
+            visibility = View.VISIBLE
 
+            // Animate the content view to 100% opacity, and clear any animation
+            // listener set on the view.
+            animate()
+                .alpha(1f)
+                .setDuration(shortAnimationDuration.toLong())
+                .setListener(null)
+        }
+        // Animate the loading view to 0% opacity. After the animation ends,
+        // set its visibility to GONE as an optimization step (it won't
+        // participate in layout passes, etc.)
+        progressBar.animate()
+            .alpha(0f)
+            .setDuration(shortAnimationDuration.toLong())
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    progressBar.visibility = View.GONE
+                }
+            })
 
     }
+    }
+
 
