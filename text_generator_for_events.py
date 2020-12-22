@@ -7,7 +7,7 @@ class Event():
     def __init__(self, data):
         self.id = data.get("id")
         self.match_id = data.get("match_id")
-        
+
         surname, name = data.get("player").split()
         name = name.lower().capitalize()
         surname = surname.lower().capitalize()
