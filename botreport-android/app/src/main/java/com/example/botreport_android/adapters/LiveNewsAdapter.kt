@@ -1,27 +1,20 @@
 package com.example.botreport_android.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import com.example.botreport_android.R
-import com.example.botreport_android.databinding.ItemLiveNewsBackBinding
 import com.example.botreport_android.databinding.ItemLiveNewsFlowBinding
-import com.example.botreport_android.databinding.ItemLiveNewsFrontBinding
 import com.example.botreport_android.entities.LiveEvent
-import com.example.botreport_android.ui.LiveEventDetailInfo
-import com.example.botreport_android.ui.LiveNewsFeedFragment
 import com.wajahatkarim3.easyflipview.EasyFlipView
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import reactivecircus.flowbinding.android.view.clicks
 
 class LiveNewsAdapter(var context: Context,val fragmentManager: FragmentManager) :
     RecyclerView.Adapter<LiveNewsAdapter.LiveNewsViewHolder>() {
@@ -60,6 +53,11 @@ class LiveNewsAdapter(var context: Context,val fragmentManager: FragmentManager)
         private val flipView: EasyFlipView = binding.flipView
         lateinit var dataView:TextView
         lateinit var textView:TextView
+        lateinit var playerView: Button
+        lateinit var typeEventView:ImageView
+        lateinit var generatedTextView: TextView
+        lateinit var matchView: TextView
+        lateinit var  leaguaView:TextView
 
         //private var LeagueView: Button
         //private var PlayerView: Button
@@ -77,8 +75,25 @@ class LiveNewsAdapter(var context: Context,val fragmentManager: FragmentManager)
         fun bind(liveEvent: LiveEvent) {
             dataView= binding.frontSide.dataView
             textView = binding.frontSide.textView
+            playerView = binding.frontSide.playerView
+            generatedTextView = binding.backSide.generatedTextView
+            leaguaView = binding.frontSide.leaguaView
+            matchView = binding.frontSide.matchView
+            typeEventView = binding.frontSide.typeEventView
             dataView.text = liveEvent.data
             textView.text = liveEvent.text
+            playerView.text = liveEvent.player
+            generatedTextView.text = liveEvent.generatedText
+            matchView.text = liveEvent.match
+            leaguaView.text = liveEvent.leagua
+            when(liveEvent.type){
+                ("YELLOW_CARD"),("YELLOW_RED_CARD")-> typeEventView.setImageDrawable(getDrawable (context,R.drawable.ic_yellow_card))
+                ("RED_CARD")-> typeEventView.setImageDrawable(getDrawable(context,R.drawable.ic_red_card))
+                else -> typeEventView.setImageDrawable(getDrawable(context,R.drawable.ic_goal))
+            }
+
+
+
 
 
         }

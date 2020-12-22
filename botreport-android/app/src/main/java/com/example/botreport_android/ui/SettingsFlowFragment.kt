@@ -6,9 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageButton
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
+
 import androidx.lifecycle.lifecycleScope
 import com.example.botreport_android.R
 import com.example.botreport_android.main.MainActivity
@@ -30,6 +28,7 @@ class SettingsFlowFragment : Fragment(){
                 (activity as MainActivity).supportFragmentManager.popBackStack()
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
+
         return view
     }
 

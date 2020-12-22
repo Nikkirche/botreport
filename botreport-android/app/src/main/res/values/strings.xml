@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">botreport-android</string>
+    <string name="app_name">New Redaction</string>
     <string name="articles">Articles</string>
     <string name="live_news">Live News</string>
     <!-- Preference Titles -->

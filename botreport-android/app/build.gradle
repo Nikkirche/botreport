@@ -51,6 +51,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'com.wajahatkarim3.EasyFlipView:EasyFlipView:3.0.0'
 
+
     //Tests
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
@@ -77,6 +78,7 @@ dependencies {
     implementation "io.github.reactivecircus.flowbinding:flowbinding-core:${flowbinding_version}"
     implementation "io.github.reactivecircus.flowbinding:flowbinding-recyclerview:${flowbinding_version}"
     implementation "io.github.reactivecircus.flowbinding:flowbinding-viewpager2:${flowbinding_version}"
+    implementation "io.github.reactivecircus.flowbinding:flowbinding-preference:${flowbinding_version}"
 
 
 

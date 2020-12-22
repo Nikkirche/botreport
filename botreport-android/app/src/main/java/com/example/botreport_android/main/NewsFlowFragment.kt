@@ -63,9 +63,9 @@ class NewsFlowFragment : MvpAppCompatFragment(), NewsFlowView {
         val tabLayout: TabLayout = view.findViewById(R.id.menu)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             if (position == 0) {
-                tab.text = resources.getString(R.string.live_news)
+                tab.text = "События"
             } else {
-                tab.text = resources.getString(R.string.articles)
+                tab.text = "Статьи "
             }
             viewPager.setCurrentItem(tab.position, true)
         }.attach()

@@ -55,8 +55,25 @@ class LiveNewsFeedFragment : MvpAppCompatFragment(), LiveNewsFeedView,
     override fun onStart() {
         super.onStart()
         //presenter.firstlyLoadNews()
+        setInAdapter(
+            arrayListOf(
+                LiveEvent(
+                    player = "Мэтти кэш",
+                    text = "Кэш Мэтти получил жёлтую карточку",
+                    generatedText = "Непревзойденный Мэтти кэш из Англии . Мэтти кэш играет за \"Астон Виллу\", родился в 1997-08-07 годах, рост 1,85 метра"
+                    , match = "Астон Вилла - Вулверхэмптон Уон", data = "20.04.20 20:20",
+                    leagua = "Лига Чемпионов",type = "YELLOW_CARD"),
+                LiveEvent(
+                    player = "Артём Дзюба",
+                    text = "Дзюба забил гол в ворота Краснодара",
+                    generatedText = "Дзюба был неоднократно признан лучшим футболистом РФ"
+                    , match = "Краснодар-Зенит", data = "20.04.20 2020", leagua = "Лига Чемпионов",type = "GOAL"
+
+                )
+            )
+        )
         Log.v("time", Calendar.getInstance().timeInMillis.toString())
-        val api = BotReportApi.retrofitService.getLiveEvents()
+        /*val api = BotReportApi.retrofitService.getLiveEvents()
         launch(Dispatchers.Main) {
             // Try catch block to handle exceptions when calling the API.
             try {
@@ -79,13 +96,11 @@ class LiveNewsFeedFragment : MvpAppCompatFragment(), LiveNewsFeedView,
             }
             finally {
                 Log.v("time", Calendar.getInstance().timeInMillis.toString())
-            }
+            }*/
 
-
-
-        }
 
     }
+
 
     private lateinit var adapter: LiveNewsAdapter
     override fun onCreateView(
@@ -103,19 +118,20 @@ class LiveNewsFeedFragment : MvpAppCompatFragment(), LiveNewsFeedView,
         shortAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
         progressBar = binding.progressBar
 
-            return view
-        }
+        return view
+    }
 
-        override fun onDestroyView() {
-            super.onDestroyView()
-            _binding = null
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-        override fun setInAdapter(result: ArrayList<LiveEvent>) {
-            recyclerAdapter.setItems(result)
-            crossfade()
-            Log.v("time", Calendar.getInstance().timeInMillis.toString())
-        }
+    override fun setInAdapter(result: ArrayList<LiveEvent>) {
+        recyclerAdapter.setItems(result)
+        crossfade()
+        Log.v("time", Calendar.getInstance().timeInMillis.toString())
+    }
+
     private fun crossfade() {
         recyclerView.apply {
             // Set the content view to 0% opacity but visible, so that it is visible
@@ -143,6 +159,6 @@ class LiveNewsFeedFragment : MvpAppCompatFragment(), LiveNewsFeedView,
             })
 
     }
-    }
+}
 
 
