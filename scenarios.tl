@@ -1,4 +1,4 @@
-#There are the patterns for gemrated text
+# There are the patterns for gemrated text
 start
 type = "YELLOW_CARD"
 And so {player} gets a yellow card.
@@ -19,7 +19,7 @@ type = "GOAL_PENALTY"
 {player} from {active} scored from the penalty spot.
 {player} from {active} pulled a penalty
 exit
-#After exit nothing will be accepted!
-#Write the patterns after type line
+# After exit nothing will be accepted!
+# Write the patterns after type line
 # DO NOT CHANGE TYPE LINES
 # all variables must be in {} and be one of this - player, time, id_in_match,active, passive,score_active, score_passive

@@ -1,21 +1,21 @@
 from pprint import pprint
 
 
-def summery_to_text(summery_data: dict) -> str:
+def summary_to_text(summary_data: dict) -> str:
     result = ""
     team_winner = {
-        'name_team': summery_data['team_home'],
-        'score': int(summery_data['score_home']),
-        'possesion': int(summery_data['possesion'].split(":")[0]),
-        'attacks': int(summery_data['attacks'].split(':')[0]),
-        'yellow_cards': int(summery_data['yellow_cards'].split(':')[0])
+        'name_team': summary_data['team_home'],
+        'score': int(summary_data['score_home']),
+        'possesion': int(summary_data['possesion'].split(":")[0]),
+        'attacks': int(summary_data['attacks'].split(':')[0]),
+        'yellow_cards': int(summary_data['yellow_cards'].split(':')[0])
     }
     team_loser = {
-        'name_team': summery_data['team_away'],
-        'score': int(summery_data['score_away']),
-        'possesion': int(summery_data['possesion'].split(":")[1]),
-        'attacks': int(summery_data['attacks'].split(':')[1]),
-        'yellow_cards': int(summery_data['yellow_cards'].split(':')[1])
+        'name_team': summary_data['team_away'],
+        'score': int(summary_data['score_away']),
+        'possesion': int(summary_data['possesion'].split(":")[1]),
+        'attacks': int(summary_data['attacks'].split(':')[1]),
+        'yellow_cards': int(summary_data['yellow_cards'].split(':')[1])
     }
     pprint(team_winner)
 

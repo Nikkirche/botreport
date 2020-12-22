@@ -65,7 +65,7 @@ def generate():
 
 
 def read_patterns():
-    file = open("patterns.txt")
+    file = open("scenarios.tl")
     patterns = {"YELLOW_CARD": [], "YELLOW_RED_CARD": [], "RED_CARD": [], "GOAL": [], "OWN_GOAL": [],
                 "GOAL_PENALTY": []}
     read_started = False

@@ -5,7 +5,7 @@ import time
 import requests as rq
 
 from ..models import LiveNews
-from .summery_to_text import summery_to_text
+from .summary_to_text import summary_to_text
 from .telegramm_write_bot import send_message_to_channel
 from .text_generator_for_events import Event, read_patterns
 
@@ -88,7 +88,7 @@ class Match:
         result['score_away'] = self.score_away
         result['team_home'] = self.team_home
         result['team_away'] = self.team_away
-        return summery_to_text(result)
+        return summary_to_text(result)
 
     def get_player_stats(self, name: str) -> dict:
         return self.stats_home['h'][name] if name in self.stats_home['h'].keys() \
@@ -157,7 +157,7 @@ class Controller:
     def clear_matches(self):
         for index, match in enumerate(self.matches):
             if match.get_status() == 'FINISHED':
-                send_message_to_channel("SUMMERY", match.get_summary())
+                send_message_to_channel("summary", match.get_summary())
                 self.matches.pop(index)
 
     def get_all_matches(self):
