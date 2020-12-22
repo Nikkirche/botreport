@@ -67,14 +67,16 @@ class Match:
         for event in list_of_events:
             event['score_home'] = self.score_home
             event['score_away'] = self.score_away
-            event['team_home'] = self.team_home
-            event['team_away'] = self.team_away
-            event['player'] = f"{event['player']}&&"
+            event['team_home'] = f"{self.team_home}"
+            event['team_away'] = f"{self.team_away}"
+            event['player'] = f"{event['player']}"
 
             cls_event = Event(event)
             text_event = cls_event.format_text(self.events_patterns)
             text_fact = generator.trivia_event(event)
+            print(text_event + ' \n\n' + text_fact)
             result_text = translate(text_event + ' \n\n' + text_fact)
+            print(result_text)
             send_message_to_channel(event['event'], result_text)
         print(self.events)
         self.events = list_of_events
@@ -92,8 +94,8 @@ class Match:
         result = dict(json.loads(req.text)['data'])
         result['score_home'] = self.score_home
         result['score_away'] = self.score_away
-        result['team_home'] = f"{self.team_home}&&"
-        result['team_away'] = f"{self.team_away}&&"
+        result['team_home'] = f"{self.team_home}"
+        result['team_away'] = f"{self.team_away}"
 
         return translate(summery_to_text(result))
 
@@ -142,6 +144,8 @@ class Controller:
             req = rq.get(
                 f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
                 f'={SECRET}&competition_id={competition}')
+            # req = rq.get(
+            #     'http://livescore-api.com/api-client/scores/history.json?key=qACKZM1CUVIaCa3g&secret=GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps&from=2020-12-12&to=2020-12-14&&competition_id=2')
 
             # req = rq.get(f'http://livescore-api.com/api-client/scores/history.json?key={KEY}'
             #              f'&secret={SECRET}&from=2020-12-12&to=2020-12-13&competition_id=2')
@@ -199,8 +203,8 @@ def test_load():
         try:
             print(len(controller))
             controller.clear_matches()
-            controller.update_all_matches()
             controller.add_new_matches()
+            controller.update_all_matches()
         except KeyboardInterrupt:
             exit()
         except BaseException as ex:
