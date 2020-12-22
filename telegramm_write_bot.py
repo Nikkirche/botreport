@@ -6,12 +6,11 @@ import random
 import os
 
 CHAT_ID = -1001209168677
-TOKEN = "916274685:AAG-ZWgt8Cm_tehotyM4om10dWn2lJAOGJM"
+TOKEN = "1487993906:AAEOqag-VZFj1rfYo3zQDEFmcUGspY-zh50"
 bot = telebot.TeleBot(TOKEN)
 
-
 def send_message_to_channel(type_event, text, chat_id=CHAT_ID):
-    bot.send_message(chat_id, text)
+    bot.send_message(chat_id, text, parse_mode='markdown')
     # new_text = ''
     # for char in text:
     #     try:
