@@ -9,6 +9,7 @@ import infodata
 from random import random, choice
 from infodata import InfoSource, sportsdb
 from facts import *
+from translater import translate
 
 KEY = "qACKZM1CUVIaCa3g"
 SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
@@ -61,18 +62,20 @@ class Match:
         self.status = info['match']['status']
         if self.status == 'IN PLAY' and prev_status == 'NOT STARTED':
             print("MATCH STARTED", self.team_home, self.team_away)
-            send_message_to_channel('', f"Match between {self.team_home} and {self.team_away} has started")
+            send_message_to_channel('', f"Матч между {self.team_home} и {self.team_away} начался")
 
         for event in list_of_events:
             event['score_home'] = self.score_home
             event['score_away'] = self.score_away
             event['team_home'] = self.team_home
             event['team_away'] = self.team_away
+            event['player'] = f"{event['player']}&&"
 
             cls_event = Event(event)
             text_event = cls_event.format_text(self.events_patterns)
             text_fact = generator.trivia_event(event)
-            send_message_to_channel(event['event'], text_event + ' \n\n' + text_fact)
+            result_text = translate(text_event + ' \n\n' + text_fact)
+            send_message_to_channel(event['event'], result_text)
         print(self.events)
         self.events = list_of_events
 
@@ -89,9 +92,10 @@ class Match:
         result = dict(json.loads(req.text)['data'])
         result['score_home'] = self.score_home
         result['score_away'] = self.score_away
-        result['team_home'] = self.team_home
-        result['team_away'] = self.team_away
-        return summery_to_text(result)
+        result['team_home'] = f"{self.team_home}&&"
+        result['team_away'] = f"{self.team_away}&&"
+
+        return translate(summery_to_text(result))
 
     def get_player_stats(self, name: str) -> dict:
         return self.stats_home['h'][name] if name in self.stats_home['h'].keys() \
