@@ -78,15 +78,16 @@ class TriviaGenerator:
         if event['event'] in ('YELLOW_CARD', 'YELLOW_RED_CARD', 'RED_CARD'):
             priority_player = True
         if priority_player or random() <= 0.4:
+            print('Player is in priority. Name: ', event['player'])
             variants = [
                 event['player'],
                 ' '.join(event['player'].split()[::-1]),
-                event['player'].split()[0],
             ]
             for var in variants:
                 try:
                     text = self.trivia_player(var)
                 except Exception as e:
+                    print(e, 'Couldn\'t find player', var)
                     # Player not found. Trying another variation...
                     continue
         if not text:

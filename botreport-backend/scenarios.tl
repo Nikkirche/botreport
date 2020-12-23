@@ -9,15 +9,15 @@ type = "YELLOW_RED_CARD"
 ❗ {player} gets a second "gorchichnik" – one less player for {active}.
 type = "RED_CARD"
 ❗ {player} from {active} got a card, the first and last one
-Aim, trigger-knock your opponent down! {player} from {active} gets a red card
+❗ Trigger-knock your opponent down! {player} from {active} gets a red card
 type = "GOAL"
 ⚽ GOOOOOAL!!! {player}!!! {score_active}:{score_passive}! Now that’s what I call football!
 ⚽ GOOOOOAL!!! {player}! {score_active}:{score_passive}! Where’s the defense of {passive} gone?
 type = "OWN_GOAL"
 😳 Incredible! {player} scored an own goal!
 type = "GOAL_PENALTY"
-{player} from {active} scored from the penalty spot.
-{player} from {active} pulled a penalty
+⚽ {player} from {active} scored from the penalty spot.
+⚽ {player} from {active} pulled a penalty
 exit
 # After exit nothing will be accepted!
 # Write the patterns after type line

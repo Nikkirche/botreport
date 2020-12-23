@@ -9,10 +9,15 @@ class Event():
         self.id = data.get("id")
         self.match_id = data.get("match_id")
         
-        surname, name = data.get("player").split()
-        name = name.lower().capitalize()
-        surname = surname.lower().capitalize()
-        self.player = surname + ' ' + name
+        try:
+            surname, name = data.get("player").split()
+            surname = surname.lower().capitalize()
+            name = name.lower().capitalize()
+            self.player = surname + ' ' + name
+        except Exception as e:
+            surname, name = data.get("player"), ''
+            surname = surname.lower().capitalize()
+            self.player = surname
 
         self.time = data.get("time")
         self.type = data.get("event")

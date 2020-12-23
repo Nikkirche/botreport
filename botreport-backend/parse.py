@@ -2,7 +2,8 @@ import requests as rq
 import json
 from summary_to_text import summary_to_text
 from pprint import pprint
-from telegram_write_bot import send_message_to_channel
+from out_tg import send_message_to_channel
+from out_db import new, post
 from generator_events import *
 from time import sleep
 import infodata
@@ -75,9 +76,12 @@ class Match:
             text_event = cls_event.format_text(self.events_patterns)
             text_fact = generator.trivia_event(event)
             print(text_event + ' \n\n' + text_fact)
-            result_text = translate(text_event + ' \n\n' + text_fact)
+            translated_event = translate(text_event)
+            translated_fact = translate(text_fact)
+            result_text = translated_event + '\n\n' + translated_fact
             print(result_text)
             send_message_to_channel(event['event'], result_text)
+            post(translated_event.replace('*', '').split('\n')[1], translated_fact, ' '.join([i.lower().capitalize() for i in event['player'].split()]), f'{self.team_home} VS {self.team_away}', info['match']['competition']['name'], event['event'])
         print(self.events)
         self.events = list_of_events
 
@@ -199,6 +203,10 @@ class Controller:
 
 def test_load():
     controller = Controller()
+    try:
+        new()
+    except Exception as e:
+        print('Database already exists')
     while True:
         try:
             print(len(controller))
