@@ -55,7 +55,7 @@ class LiveNewsFeedFragment : MvpAppCompatFragment(), LiveNewsFeedView,
     override fun onStart() {
         super.onStart()
         //presenter.firstlyLoadNews()
-        setInAdapter(
+        /*setInAdapter(
             arrayListOf(
                 LiveEvent(
                     player = "Мэтти кэш",
@@ -71,9 +71,9 @@ class LiveNewsFeedFragment : MvpAppCompatFragment(), LiveNewsFeedView,
 
                 )
             )
-        )
+        )*/
         Log.v("time", Calendar.getInstance().timeInMillis.toString())
-        /*val api = BotReportApi.retrofitService.getLiveEvents()
+        val api = BotReportApi.retrofitService.getLiveEvents()
         launch(Dispatchers.Main) {
             // Try catch block to handle exceptions when calling the API.
             try {
@@ -91,12 +91,11 @@ class LiveNewsFeedFragment : MvpAppCompatFragment(), LiveNewsFeedView,
 
                     }
                 })
-            }
-            catch (e:Exception){
-            }
-            finally {
+            } catch (e: Exception) {
+            } finally {
                 Log.v("time", Calendar.getInstance().timeInMillis.toString())
-            }*/
+            }
+        }
 
 
     }
