@@ -1,6 +1,7 @@
 import random
-
 import parse
+import sys
+from os import path
 
 
 class Event():
@@ -65,7 +66,7 @@ def generate():
 
 
 def read_patterns():
-    file = open("scenarios.tl")
+    file = open(path.join(path.dirname(sys.argv[0]), "scenarios.tl"))
     patterns = {"YELLOW_CARD": [], "YELLOW_RED_CARD": [], "RED_CARD": [], "GOAL": [], "OWN_GOAL": [],
                 "GOAL_PENALTY": []}
     read_started = False

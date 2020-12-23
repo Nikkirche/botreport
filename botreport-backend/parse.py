@@ -3,13 +3,13 @@ import json
 from summary_to_text import summary_to_text
 from pprint import pprint
 from telegram_write_bot import send_message_to_channel
-from text_generator_for_events import *
+from generator_events import *
 from time import sleep
 import infodata
 from random import random, choice
 from infodata import InfoSource, sportsdb
-from facts import *
-from translater import translate
+from generator_trivia import *
+from translator import translate
 
 KEY = "qACKZM1CUVIaCa3g"
 SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
@@ -141,11 +141,11 @@ class Controller:
         competitions = COMPETITIONS
         ans_dict = dict()
         for competition in competitions:
-            req = rq.get(
+            '''req = rq.get(
                 f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
-                f'={SECRET}&competition_id={competition}')
-            # req = rq.get(
-            #     'http://livescore-api.com/api-client/scores/history.json?key=qACKZM1CUVIaCa3g&secret=GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps&from=2020-12-12&to=2020-12-14&&competition_id=2')
+                f'={SECRET}&competition_id={competition}')'''
+            req = rq.get(
+                'http://livescore-api.com/api-client/scores/history.json?key=qACKZM1CUVIaCa3g&secret=GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps&from=2020-12-12&to=2020-12-14&&competition_id=2')
 
             # req = rq.get(f'http://livescore-api.com/api-client/scores/history.json?key={KEY}'
             #              f'&secret={SECRET}&from=2020-12-12&to=2020-12-13&competition_id=2')

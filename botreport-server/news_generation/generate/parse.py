@@ -7,7 +7,7 @@ import requests as rq
 from ..models import LiveNews
 from .summary_to_text import summary_to_text
 from .telegram_write_bot import send_message_to_channel
-from .text_generator_for_events import Event, read_patterns
+from .generator_events import Event, read_patterns
 
 KEY = "qACKZM1CUVIaCa3g"
 SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"

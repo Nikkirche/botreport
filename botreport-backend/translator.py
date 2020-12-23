@@ -1,7 +1,7 @@
 from requests import post, get
 from json import dumps, loads
 
-IAM_TOKEN = "t1.9euelZqJjMnGzcqZjZCUmc2Wl8_Kze3rnpWazY3Ik8qLlJeXisyOjM-NnMnl9PdoO3kA-u93ZTW13fT3KGp2APrvd2U1tQ.2zJOxE6O6LIb5zxOZZDSqHg7HlUVBaidWPIMCHSKGPu2MT5r7JrO1LVtaWg1qfaqGHcDhBcigZax-qvcQLFWDw"
+IAM_TOKEN = "t1.9euelZqdyo_PjZ2czZuXi5LLjMuJlO3rnpWazY3Ik8qLlJeXisyOjM-NnMnl9PczNHQA-u9XJhC33fT3c2JxAPrvVyYQtw.nPravucwnstjkhKIPtdQUhYwE86O2MtuPDUnzfwSlMOgjrvrziTtsBJsUpFfu5GqiDH82XpIdxXb2SwyDOcfAQ"
 url = "https://translate.api.cloud.yandex.net/translate/v2/translate"
 
 
@@ -18,6 +18,7 @@ def translate(text: str) -> str:
         "Authorization": f"Bearer {IAM_TOKEN}"
     }
     response = post(url=url, data=dumps(data), headers=headers)
+    print(response.text)
 
     return loads(response.text)["translations"][0]['text']
 
