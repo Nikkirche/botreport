@@ -78,15 +78,16 @@ class TriviaGenerator:
         if event['event'] in ('YELLOW_CARD', 'YELLOW_RED_CARD', 'RED_CARD'):
             priority_player = True
         if priority_player or random() <= 0.4:
+            print('Player is in priority. Name: ', event['player'])
             variants = [
                 event['player'],
                 ' '.join(event['player'].split()[::-1]),
-                event['player'].split()[0],
             ]
             for var in variants:
                 try:
                     text = self.trivia_player(var)
                 except Exception as e:
+                    print(e, 'Couldn\'t find player', var)
                     # Player not found. Trying another variation...
                     continue
         if not text:
@@ -101,7 +102,7 @@ class TriviaGenerator:
         return text
             
 
-default_player = {
+DEFAULT_PLAYER = {
     ('name',): ('{name} is a footballer', '{name} is', 'The unmatched {name} is', 'An excellent player, {name} is', 'Truly a legend! {name} is',),
     ('country_born',): ('from {country_born}', 'coming from {country_born}',),
     ('country_play', 'team'): ('$sep plays for {country_play}, team {team}', '$sep plays for {team}',),
@@ -112,7 +113,7 @@ default_player = {
     'sep': (',', ' and', '. {name}', ';')
 }
 
-default_team = {
+DEFAULT_TEAM = {
     ('name',): ('{name} is a team', 'Team {name} is', 'The undefeatable {name} is',),
     ('country',): ('from {country}', 'coming from {country}',),
     ('year_founded',): ('$sep was founded in {year_founded}', '. Founded in {year_founded}, {name} is standing strong today', ''),

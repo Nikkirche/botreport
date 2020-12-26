@@ -61,4 +61,10 @@ class SportsDBInfoSource(InfoSource):
 
             'team': team_data.get('name'),
         }
+        data = self.__cleanup(data)
+        return data
+
+    def __cleanup(self, data):
+        if data['date_born'].startswith('0'):
+            data['date_born'] = None
         return data

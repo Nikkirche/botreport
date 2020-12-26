@@ -1,17 +1,23 @@
 import random
-
 import parse
+import sys
+from os import path
 
 
 class Event():
     def __init__(self, data):
         self.id = data.get("id")
         self.match_id = data.get("match_id")
-
-        surname, name = data.get("player").split()
-        name = name.lower().capitalize()
-        surname = surname.lower().capitalize()
-        self.player = surname + ' ' + name
+        
+        try:
+            surname, name = data.get("player").split()
+            surname = surname.lower().capitalize()
+            name = name.lower().capitalize()
+            self.player = surname + ' ' + name
+        except Exception as e:
+            surname, name = data.get("player"), ''
+            surname = surname.lower().capitalize()
+            self.player = surname
 
         self.time = data.get("time")
         self.type = data.get("event")
@@ -50,9 +56,7 @@ class Event():
         elif self.type == "GOAL_PENALTY":
             i = random.randint(0, len(patterns["GOAL_PENALTY"]) - 1)
             text = patterns["GOAL_PENALTY"][i].format(**objects)
-        print("----------------------\n", f"{self.active} vs {self.passive}\n{text}", '\n--------------------\n',
-              sep='')
-        return f"{self.active} vs {self.passive}\n{text}"
+        return f"*{self.active} vs {self.passive}*\n{text}"
 
 
 def generate():
@@ -67,7 +71,7 @@ def generate():
 
 
 def read_patterns():
-    file = open("patterns.txt")
+    file = open(path.join(path.dirname(sys.argv[0]), "scenarios.tl"))
     patterns = {"YELLOW_CARD": [], "YELLOW_RED_CARD": [], "RED_CARD": [], "GOAL": [], "OWN_GOAL": [],
                 "GOAL_PENALTY": []}
     read_started = False

@@ -1,17 +1,20 @@
-import json
-from pprint import pprint
-import time
-
 import requests as rq
-
-from ..models import LiveNews
-from .summery_to_text import summery_to_text
-from .telegramm_write_bot import send_message_to_channel
-from .text_generator_for_events import Event, read_patterns
+import json
+from summary_to_text import summary_to_text
+from pprint import pprint
+from out_tg import send_message_to_channel
+from out_db import new, post
+from generator_events import *
+from time import sleep
+import infodata
+from random import random, choice
+from infodata import InfoSource, sportsdb
+from generator_trivia import *
+from translator import translate
 
 KEY = "qACKZM1CUVIaCa3g"
 SECRET = "GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps"
-COMPETITIONS = [2, 3]
+COMPETITIONS = [1, 2, 3, 4]
 
 
 class Match:
@@ -34,7 +37,8 @@ class Match:
 
         self.events_patterns = read_patterns()
 
-    def update(self):
+    def update(self, generator):
+        prev_status = self.status
         info = self._get_match_events()
         events = filter(lambda x: int(x['sort']) > self.counter_event, info['event'])
         list_of_events = list(events)
@@ -54,23 +58,31 @@ class Match:
             else:
                 self.stats_away = team
         self.counter_event = len(info['event']) - 1
-
-        self.score_home, self.score_away = map(int, info['match']['score'].split(' - '))
+        if info['match']['score'] != '? - ?':
+            self.score_home, self.score_away = map(int, info['match']['score'].split(' - '))
         self.status = info['match']['status']
+        if self.status == 'IN PLAY' and prev_status == 'NOT STARTED':
+            print("MATCH STARTED", self.team_home, self.team_away)
+            send_message_to_channel('', f"Матч между {self.team_home} и {self.team_away} начался")
 
         for event in list_of_events:
             event['score_home'] = self.score_home
             event['score_away'] = self.score_away
-            event['team_home'] = self.team_home
-            event['team_away'] = self.team_away
+            event['team_home'] = f"{self.team_home}"
+            event['team_away'] = f"{self.team_away}"
+            event['player'] = f"{event['player']}"
 
             cls_event = Event(event)
-            text = cls_event.format_text(self.events_patterns)
-            # send_message_to_channel('', text)
-            n = LiveNews(text=text, data=time.ctime())
-            n.save()
-            print("addded")
-
+            text_event = cls_event.format_text(self.events_patterns)
+            text_fact = generator.trivia_event(event)
+            print(text_event + ' \n\n' + text_fact)
+            translated_event = translate(text_event)
+            translated_fact = translate(text_fact)
+            result_text = translated_event + '\n\n' + translated_fact
+            print(result_text)
+            send_message_to_channel(event['event'], result_text)
+            post(translated_event.replace('*', '').split('\n')[1], translated_fact, ' '.join([i.lower().capitalize() for i in event['player'].split()]), f'{self.team_home} VS {self.team_away}', info['match']['competition']['name'], event['event'])
+        print(self.events)
         self.events = list_of_events
 
     def _get_match_events(self) -> dict:
@@ -86,9 +98,10 @@ class Match:
         result = dict(json.loads(req.text)['data'])
         result['score_home'] = self.score_home
         result['score_away'] = self.score_away
-        result['team_home'] = self.team_home
-        result['team_away'] = self.team_away
-        return summery_to_text(result)
+        result['team_home'] = f"{self.team_home}"
+        result['team_away'] = f"{self.team_away}"
+
+        return translate(summery_to_text(result))
 
     def get_player_stats(self, name: str) -> dict:
         return self.stats_home['h'][name] if name in self.stats_home['h'].keys() \
@@ -122,23 +135,34 @@ class Match:
 class Controller:
     def __init__(self):
         self.matches = []
-        self._generate_matches()
+
+        sapi = sportsdb.SportsDBInfoSource()
+
+        aggregator = InfoAggregator([sapi])
+        self.generator = TriviaGenerator(aggregator, DEFAULT_TEAM, DEFAULT_PLAYER)
 
     def get_today_matches(self) -> dict:
-        # arr = [2, 3, 4, 6, 45]
         competitions = COMPETITIONS
         ans_dict = dict()
         for competition in competitions:
-            # req = rq.get(
-            #     f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
-            #     f'={SECRET}&competition_id={competition}')
-            req = rq.get(f'http://livescore-api.com/api-client/scores/history.json?key={KEY}'
-                         f'&secret={SECRET}&from=2020-12-12&to=2020-12-13&competition_id=2')
+            '''req = rq.get(
+                f'http://livescore-api.com/api-client/scores/live.json?key={KEY}&secret'
+                f'={SECRET}&competition_id={competition}')'''
+            req = rq.get(
+                'http://livescore-api.com/api-client/scores/history.json?key=qACKZM1CUVIaCa3g&secret=GD8GLhMdizlJoGWOgyzfkASfwAq9Ltps&from=2020-12-12&to=2020-12-14&&competition_id=2')
+
+            # req = rq.get(f'http://livescore-api.com/api-client/scores/history.json?key={KEY}'
+            #              f'&secret={SECRET}&from=2020-12-12&to=2020-12-13&competition_id=2')
             # print(json.loads(req.text))
             data = json.loads(req.text)
-            for dat in data['data']['match'][:5]:
+            # if not data['success']:
+            #     print("Something went wrong")
+            #     return {}
+            for dat in data['data']['match']:
                 ans_dict[dat['id']] = dat
-            return ans_dict
+        print(ans_dict)
+        print("KEYS COUNTER:", len(ans_dict.keys()))
+        return ans_dict
 
     def _generate_matches(self):
         for id_match, data_of_match in self.get_today_matches().items():
@@ -146,18 +170,22 @@ class Controller:
 
     def update_all_matches(self):
         for match in self.matches:
-            match.update()
+            match.update(self.generator)
 
     def add_new_matches(self):
         matches = self.get_today_matches()
         for id_match, data in matches.items():
+            if data['status'] != 'FINISHED':
+                print("From add new match function: Match finished")
+                continue
             if id_match not in self.matches:
                 self.matches.append(Match(id_match, data))
 
     def clear_matches(self):
         for index, match in enumerate(self.matches):
             if match.get_status() == 'FINISHED':
-                send_message_to_channel("SUMMERY", match.get_summary())
+                pprint(match.get_summary())
+                send_message_to_channel("summary", match.get_summary())
                 self.matches.pop(index)
 
     def get_all_matches(self):
@@ -173,12 +201,34 @@ class Controller:
         return len(self.matches)
 
 
+def test_load():
+    controller = Controller()
+    try:
+        new()
+    except Exception as e:
+        print('Database already exists')
+    while True:
+        try:
+            print(len(controller))
+            controller.clear_matches()
+            controller.add_new_matches()
+            controller.update_all_matches()
+        except KeyboardInterrupt:
+            exit()
+        except BaseException as ex:
+            print(ex)
+        print('iteration')
+        sleep(120)
+
+
 if __name__ == '__main__':
-    test = Controller()
+    test_load()
+    # pass
+    # test = Controller()
     # test.update_all_matches()
-    match = test[1]
-    match.update()
-    pprint(match.get_events())
+    # match = test[1]
+    # match.update()
+    # pprint(match.get_events())
     # test.clear_matches()
     # print(match.get_summary())
 
